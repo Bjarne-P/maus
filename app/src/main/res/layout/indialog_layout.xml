@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="10dp"
+              tools:context=".EditAddTodoActivity">
+
+    <EditText android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/edit_Name"
+              android:hint="Name"/>
+
+    <EditText android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/edit_Beschreibung"
+              android:hint="Beschreibung"/>
+
+
+    <Button android:id="@+id/set_due_date"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Set Due Date"/>
+
+    <Button android:id="@+id/set_due_time"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Set Due Time"/>
+
+    <CheckBox android:layout_width="match_parent"
+              android:id="@+id/set_important"
+              android:layout_height="wrap_content"
+              android:text="Important Activity"/>
+
+
+</LinearLayout>
