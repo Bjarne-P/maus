@@ -16,6 +16,7 @@ public class Todo implements Serializable {
 
     private String content;
 
+
     private boolean importaint;
 
     private int due_minute;
@@ -78,5 +79,9 @@ public class Todo implements Serializable {
 
     public int getDue_minute() {
         return due_minute;
+    }
+
+    public void setImportaint(boolean importaint) {
+        this.importaint = importaint;
     }
 }

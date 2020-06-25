@@ -31,23 +31,7 @@ public abstract class TodoDB extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
-            new PopulateDbAsyncTask(DB).execute();
         }
     };
 
-    private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void>{
-        private TodoDAO todoDAO;
-
-        private PopulateDbAsyncTask(TodoDB tododb){
-            todoDAO = tododb.todoDAO();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            todoDAO.insert(new Todo("Title1", "Content1", true, 2,12,23,10,2020));
-            todoDAO.insert(new Todo("Title2", "Content2", false, 3,13,23,10,2020));
-            todoDAO.insert(new Todo("Title3", "Content3", true, 4,14,23,10,2020));
-            return null;
-        }
-    }
 }

@@ -59,15 +59,19 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             Bundle args = intent.getExtras();
             edit_name.setText(args.getString(EXTRA_TITLE));
             edit_content.setText(args.getString(EXTRA_CONTENT));
-            set_importaint.setActivated(args.getBoolean(EXTRA_IMPORTAINT));
+            set_importaint.setChecked(args.getBoolean(EXTRA_IMPORTAINT));
             calendar.set(args.getInt(EXTRA_YEAR), args.getInt(EXTRA_MONTH),
                     args.getInt(EXTRA_DAY), args.getInt(EXTRA_HOUR),
                     args.getInt(EXTRA_MINUTE));
         } else setTitle("Add Todo");
 
-
-        setTime.setText(String.format("%02d", calendar.HOUR) + ":" + String.format("%02d", calendar.MINUTE));
-        setDate.setText(DateFormat.getDateInstance().format(c.getTime()));
+        if(intent.hasExtra(EXTRA_ID)){
+            setTime.setText(String.format("%02d", calendar.HOUR) + ":" + String.format("%02d", calendar.MINUTE));
+            setDate.setText(DateFormat.getDateInstance().format(c.getTime()));
+        }else{
+            setTime.setText("Set Due Time");
+            setDate.setText("Set Due Date");
+        }
 
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +145,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 saveNote();
                 return true;
             default:
+                setResult(RESULT_CANCELED);
                 return super.onOptionsItemSelected(item);
         }
     }
