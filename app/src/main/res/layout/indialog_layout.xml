@@ -28,6 +28,10 @@
             android:layout_height="wrap_content"
             android:text="Set Due Time"/>
 
+    <Button android:id="@+id/add_contact"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Add Contact"/>
     <CheckBox android:layout_width="match_parent"
               android:id="@+id/set_important"
               android:layout_height="wrap_content"
