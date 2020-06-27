@@ -1,8 +1,10 @@
 package com.example.todo;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +13,8 @@ import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import com.example.todo.ROOM.Todo;
 import com.example.todo.Widgets.DatePickerFragment;
@@ -29,9 +33,11 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public static final String EXTRA_DAY = "com.example.todo.extra_day";
     public static final String EXTRA_HOUR = "com.example.todo.extra_hour";
     public static final String EXTRA_MINUTE = "com.example.todo.extra_minute";
+    private static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 17;
 
     private Button setTime;
     private Button setDate;
+    private Button addContact;
     private EditText edit_name;
     private EditText edit_content;
     private CheckBox set_importaint;
@@ -44,6 +50,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setContentView(R.layout.indialog_layout);
         setTime = findViewById(R.id.set_due_time);
         setDate = findViewById(R.id.set_due_date);
+        addContact = findViewById(R.id.add_contact);
         edit_name = findViewById(R.id.edit_Name);
         edit_content = findViewById(R.id.edit_Beschreibung);
         set_importaint = findViewById(R.id.set_important);
@@ -88,7 +95,43 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 datePicker.show(getSupportFragmentManager(), "Datepicker");
             }
         });
+
+        addContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestContactReadPermission();
+            }
+        });
     }
+
+
+    private void requestContactReadPermission() {
+        // Modified version of sample code by Schaffoener
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSION_REQUEST_READ_CONTACTS);
+            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an app-defined int constant ("request-code"). The callback method gets the result of the request.
+        } else {
+            // already granted, or old runtime without individual permissions
+            //initContacts();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // Modified version of sample code by Schaffoener
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST_READ_CONTACTS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // proceed as required by app logic
+                    //initContacts();
+                } else {
+                    // do something reasonable if permissions are denied, e.g., disable contacts access API and also disable or remove UI elements
+                    //this.accessor = new NoopContactsAccessor();
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
