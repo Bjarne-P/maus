@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.ROOM.Todo;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
     private List<Todo> todos = new ArrayList<>();
@@ -69,6 +67,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
     public void setTodos(List<Todo> todos) {
         this.todos = todos;
         notifyDataSetChanged();
+    }
+
+    public List<Todo> getTodos(){
+        return this.todos;
     }
 
     public Todo getTodoAt(int position) {

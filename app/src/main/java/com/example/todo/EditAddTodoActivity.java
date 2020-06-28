@@ -12,7 +12,6 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-import com.example.todo.ROOM.Todo;
 import com.example.todo.Widgets.DatePickerFragment;
 import com.example.todo.Widgets.TimePickerFragment;
 
@@ -103,7 +102,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
     }
 
-    private void saveNote() {
+    private void saveTodo() {
         String title = edit_name.getText().toString();
         String content = edit_content.getText().toString();
         boolean importaint = set_importaint.isChecked();
@@ -142,10 +141,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-                saveNote();
+                saveTodo();
                 return true;
             default:
-                setResult(RESULT_CANCELED);
                 return super.onOptionsItemSelected(item);
         }
     }

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,7 +33,7 @@ public class TodoListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
 
-        setTitle("Todolist by Bjarne Peuker");
+        setTitle("Todolist by Bjarne Peuker & Felix Kainz");
 
         FloatingActionButton btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +50,7 @@ public class TodoListActivity extends AppCompatActivity {
 
         final TodoAdapter adapter = new TodoAdapter();
         recyclerView.setAdapter(adapter);
+
 
         todoViewmodel = new ViewModelProvider(this).get(TodoViewmodel.class);
         todoViewmodel.getAllTodos().observe(this, new Observer<List<Todo>>() {
@@ -137,8 +139,8 @@ public class TodoListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bundle bundle = data.getExtras();
         if ((requestCode == add_todo_request) && (resultCode == RESULT_OK)) {
+            Bundle bundle = data.getExtras();
             String title = data.getStringExtra(EditAddTodoActivity.EXTRA_TITLE);
             String content = data.getStringExtra(EditAddTodoActivity.EXTRA_CONTENT);
             boolean importaint = bundle.getBoolean(EditAddTodoActivity.EXTRA_IMPORTAINT, false);
@@ -159,7 +161,7 @@ public class TodoListActivity extends AppCompatActivity {
                 Toast.makeText(this, "Couldn't update", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            Bundle bundle = data.getExtras();
             String title = data.getStringExtra(EditAddTodoActivity.EXTRA_TITLE);
             String content = data.getStringExtra(EditAddTodoActivity.EXTRA_CONTENT);
             boolean importaint = bundle.getBoolean(EditAddTodoActivity.EXTRA_IMPORTAINT, false);
@@ -192,6 +194,9 @@ public class TodoListActivity extends AppCompatActivity {
             case R.id.delete_all:
                 todoViewmodel.deleteAll();
                 Toast.makeText(this, "All Todos deleted", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.sort_by_due:
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

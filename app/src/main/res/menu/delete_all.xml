@@ -3,4 +3,7 @@
     <item android:id="@+id/delete_all"
           android:title="delete all Todos"
           app:showAsAction="never"/>
+    <item android:id="@+id/sort_by_due"
+          android:title="sort by due date"
+          app:showAsAction="never"/>
 </menu>
