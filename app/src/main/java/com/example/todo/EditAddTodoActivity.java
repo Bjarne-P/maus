@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,6 +29,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class EditAddTodoActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+    private static final int CONTACT_SELECTED = 0;
     protected static String logger = EditAddTodoActivity.class.getSimpleName();
     public static final String EXTRA_ID = "com.example.todo.extra_id";
     public static final String EXTRA_TITLE = "com.example.todo.extra_title";
@@ -47,7 +49,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     private EditText edit_content;
     private CheckBox set_importaint;
     Calendar c = Calendar.getInstance();
-    private Button addContact;
+    private Button add_Contact;
     private ListView contactsListView;
 
 
@@ -57,7 +59,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setContentView(R.layout.indialog_layout);
         setTime = findViewById(R.id.set_due_time);
         setDate = findViewById(R.id.set_due_date);
-        addContact = findViewById(R.id.add_contact);
+        add_Contact = findViewById(R.id.add_contact);
         edit_name = findViewById(R.id.edit_Name);
         edit_content = findViewById(R.id.edit_Beschreibung);
         set_importaint = findViewById(R.id.set_important);
@@ -103,7 +105,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             }
         });
 
-        addContact.setOnClickListener(new View.OnClickListener() {
+        add_Contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestContactReadPermission();
@@ -120,7 +122,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             // already granted, or old runtime without individual permissions
             //initContacts();
             Intent intent = new Intent(this, AddressbookSelectActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, CONTACT_SELECTED);
         }
     }
 
@@ -132,7 +134,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                     // proceed as required by app logic
                     //initContacts();
                     Intent intent = new Intent(this, AddressbookSelectActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, CONTACT_SELECTED);
                 } else {
                     // do something reasonable if permissions are denied, e.g., disable contacts access API and also disable or remove UI elements
                     //this.accessor = new NoopContactsAccessor();
@@ -153,6 +155,16 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bundle bundle = data.getExtras();
+
+        if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
+            contactsList.add((Contact) bundle.get("RESPONSE_ENTRY"));
+        }
     }
 
     private void saveNote() {
