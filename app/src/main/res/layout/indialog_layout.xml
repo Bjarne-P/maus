@@ -32,6 +32,14 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Add Contact"/>
+
+    <ListView
+            android:id="@+id/contactsList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0" >
+    </ListView>
+
     <CheckBox android:layout_width="match_parent"
               android:id="@+id/set_important"
               android:layout_height="wrap_content"
