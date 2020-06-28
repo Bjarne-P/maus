@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".addressbook.AddressbookSelectActivity">
         </activity>
+        <activity android:name=".addressbook.AddressbookEntryActivity">
+        </activity>
         <activity android:name=".TodoListActivity"
                   android:launchMode="singleTop">
             <intent-filter>

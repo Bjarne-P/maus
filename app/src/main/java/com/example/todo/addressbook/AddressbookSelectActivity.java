@@ -204,6 +204,7 @@ public class AddressbookSelectActivity extends AppCompatActivity {
 		});
 */
 		//requestReadContactsPermissions();
+		initContacts();
 	}
 
 	/*
