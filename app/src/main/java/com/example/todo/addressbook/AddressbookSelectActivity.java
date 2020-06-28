@@ -28,8 +28,8 @@ import java.util.List;
 
 public class AddressbookSelectActivity extends AppCompatActivity {
 
-	private static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 17;
-
+	private static final int CONTACT_SELECTED = 0;
+	private static final String RESPONSE_ENTRY = "entry";
 	protected static String logger = AddressbookSelectActivity.class.getSimpleName();
 
 	/**
@@ -187,11 +187,29 @@ public class AddressbookSelectActivity extends AppCompatActivity {
 
 				Contact item = contactsList.get(itemPosition);
 
+				Intent resultIntent = new Intent();
+				resultIntent.putExtra(RESPONSE_ENTRY, item);
+
+				setResult(RESULT_OK, resultIntent);
+				finish();
+			}
+
+		});
+		/*
+		contactsListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View itemView, int itemPosition, long itemId) {
+
+				Log.i(logger, "onItemClick: position is: " + itemPosition + ", id is: " + itemId);
+
+				Contact item = contactsList.get(itemPosition);
+
 				processSelectContact(item);
 			}
 
 		});
-
+		*/
 		// set a listener for the newItemButton
 	/*
 		createContact.setOnClickListener(new OnClickListener() {
@@ -268,7 +286,7 @@ public class AddressbookSelectActivity extends AppCompatActivity {
 
 		}.execute();
 	}
-
+	/*
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
@@ -282,7 +300,7 @@ public class AddressbookSelectActivity extends AppCompatActivity {
 			}
 		}
 	}
-
+	*/
 	private void initContacts() {
 		// instantiate the accessor
 		this.accessor = new ContactsAccessorImpl(this.getContentResolver());

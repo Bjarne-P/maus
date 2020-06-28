@@ -14,21 +14,21 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="backend" />
+          <element id="library" level="project" name="Gradle: room-runtime-2.2.5" />
+          <element id="library" level="project" name="Gradle: sqlite-framework-2.0.1" />
+          <element id="library" level="project" name="Gradle: sqlite-2.0.1" />
+          <element id="library" level="project" name="Gradle: core-runtime-2.0.1" />
         </element>
         <element id="directory" name="lib">
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.8.5/b3035f37e674c04dafe36a660c3815cc59f764e2/jackson-databind-2.8.5.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.scannotation/scannotation/1.0.3/752458e33fd31d8dff9f0afa953b8e2bf90fe703/scannotation-1.0.3.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.16/7999a63bfccbc7c247a9aea10d83d4272bd492c6/log4j-1.2.16.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.room/room-runtime/2.2.5/b10f919e92246c538afd0d27ea8ef52c966f404c/room-runtime-2.2.5.aar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.8.0/45b426f7796b741035581a176744d91090e2e6fb/jackson-annotations-2.8.0.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.8.5/60d059f5d2930ccd1ef03535b713fd9f933d1ba7/jackson-core-2.8.5.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javassist/javassist/3.12.1.GA/526633327faa61aee448a519e8a4d53ec3057885/javassist-3.12.1.GA.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.room/room-common/2.2.5/f5e3b73a0c2ab5e276e26868e4ce3542baede207/room-common-2.2.5.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.sqlite/sqlite-framework/2.0.1/86a70973f9705d1bca5e947ae80d361136ba0a3a/sqlite-framework-2.0.1.aar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.sqlite/sqlite/2.0.1/f6eecc9db98b1888fd97d1cf7f83fda41ba28148/sqlite-2.0.1.aar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-runtime/2.0.1/5843359688fbf06ac0f022a4f453c9d79e6c9f2c/core-runtime-2.0.1.aar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.arch.core/core-common/2.0.1/3e8d84e4fe526be0ca1832a518bf323e729a79fd/core-common-2.0.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.annotation/annotation/1.1.0/e3a6fb2f40e3a3842e6b7472628ba4ce416ea4c8/annotation-1.1.0.jar" />
+          <element id="library" level="project" name="Gradle: jackson-databind-2.8.5" />
+          <element id="library" level="project" name="Gradle: scannotation-1.0.3" />
+          <element id="library" level="project" name="Gradle: log4j-1.2.16" />
+          <element id="library" level="project" name="Gradle: jackson-annotations-2.8.0" />
+          <element id="library" level="project" name="Gradle: jackson-core-2.8.5" />
+          <element id="library" level="project" name="Gradle: javassist-3.12.1.GA" />
+          <element id="library" level="project" name="Gradle: room-common-2.2.5" />
+          <element id="library" level="project" name="Gradle: core-common-2.0.1" />
+          <element id="library" level="project" name="Gradle: annotation-1.1.0" />
         </element>
       </element>
     </root>
