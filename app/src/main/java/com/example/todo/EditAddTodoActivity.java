@@ -18,11 +18,16 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import com.example.todo.Widgets.DatePickerFragment;
 import com.example.todo.Widgets.TimePickerFragment;
+import com.example.todo.addressbook.AddressbookSelectActivity;
+import com.example.todo.addressbook.model.Contact;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class EditAddTodoActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+    protected static String logger = EditAddTodoActivity.class.getSimpleName();
     public static final String EXTRA_ID = "com.example.todo.extra_id";
     public static final String EXTRA_TITLE = "com.example.todo.extra_title";
     public static final String EXTRA_CONTENT = "com.example.todo.extra_content";
@@ -33,14 +38,16 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public static final String EXTRA_HOUR = "com.example.todo.extra_hour";
     public static final String EXTRA_MINUTE = "com.example.todo.extra_minute";
     private static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 17;
+    private List<Contact> contactsList = new ArrayList<Contact>();
 
     private Button setTime;
     private Button setDate;
-    private Button addContact;
     private EditText edit_name;
     private EditText edit_content;
     private CheckBox set_importaint;
     Calendar c = Calendar.getInstance();
+    private Button addContact;
+    private ListView contactsListView;
 
 
     @Override
@@ -105,24 +112,26 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
 
 
     private void requestContactReadPermission() {
-        // Modified version of sample code by Schaffoener
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSION_REQUEST_READ_CONTACTS);
             // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an app-defined int constant ("request-code"). The callback method gets the result of the request.
         } else {
             // already granted, or old runtime without individual permissions
             //initContacts();
+            Intent intent = new Intent(this, AddressbookSelectActivity.class);
+            startActivity(intent);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        // Modified version of sample code by Schaffoener
         switch (requestCode) {
             case MY_PERMISSION_REQUEST_READ_CONTACTS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // proceed as required by app logic
                     //initContacts();
+                    Intent intent = new Intent(this, AddressbookSelectActivity.class);
+                    startActivity(intent);
                 } else {
                     // do something reasonable if permissions are denied, e.g., disable contacts access API and also disable or remove UI elements
                     //this.accessor = new NoopContactsAccessor();
