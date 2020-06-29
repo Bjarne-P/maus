@@ -1,24 +1,32 @@
 package com.example.todo;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import com.example.todo.Widgets.DatePickerFragment;
 import com.example.todo.Widgets.TimePickerFragment;
+import com.example.todo.addressbook.AddressbookSelectActivity;
+import com.example.todo.addressbook.model.Contact;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class EditAddTodoActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+    private static final int CONTACT_SELECTED = 0;
+    protected static String logger = EditAddTodoActivity.class.getSimpleName();
     public static final String EXTRA_ID = "com.example.todo.extra_id";
     public static final String EXTRA_TITLE = "com.example.todo.extra_title";
     public static final String EXTRA_CONTENT = "com.example.todo.extra_content";
@@ -28,6 +36,8 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public static final String EXTRA_DAY = "com.example.todo.extra_day";
     public static final String EXTRA_HOUR = "com.example.todo.extra_hour";
     public static final String EXTRA_MINUTE = "com.example.todo.extra_minute";
+    private static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 17;
+    private List<Contact> contactsList = new ArrayList<Contact>();
 
     private Button setTime;
     private Button setDate;
@@ -35,6 +45,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     private EditText edit_content;
     private CheckBox set_importaint;
     Calendar c = Calendar.getInstance();
+    private Button add_Contact;
+    private ListView contactsListView;
+    private ArrayAdapter<Contact> contactsListAdapter;
 
 
     @Override
@@ -43,9 +56,11 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setContentView(R.layout.indialog_layout);
         setTime = findViewById(R.id.set_due_time);
         setDate = findViewById(R.id.set_due_date);
+        add_Contact = findViewById(R.id.add_contact);
         edit_name = findViewById(R.id.edit_Name);
         edit_content = findViewById(R.id.edit_Beschreibung);
         set_importaint = findViewById(R.id.set_important);
+        contactsListView = findViewById(R.id.embeddedContactsList);
         final Calendar calendar = Calendar.getInstance();
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
@@ -87,7 +102,72 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 datePicker.show(getSupportFragmentManager(), "Datepicker");
             }
         });
+
+        add_Contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestContactReadPermission();
+            }
+        });
+
+        //contactsList.add(new Contact());
+        contactsListAdapter = new ArrayAdapter<Contact>(this, R.layout.addressbookitem_in_listview, contactsList) {
+            @Override
+            public View getView(final int position, View view, ViewGroup parent) {
+
+                final ViewGroup listItemView = (ViewGroup) (view == null
+                        ? getLayoutInflater().inflate(R.layout.addressbookitem_in_listview, null) : view);
+
+                TextView nameView = (TextView) listItemView.findViewById(R.id.contactName);
+
+                final Contact contactItem = contactsList.get(position);
+
+                if (contactItem.getName() != null) {
+                    nameView.setText(contactItem.getName());
+                } else if (contactItem.getEmails().size() > 0) {
+                    nameView.setText(String.valueOf(contactItem.getEmails().get(0)));
+                    ;
+                } else {
+                    nameView.setText("N.N.");
+                }
+                return listItemView;
+            }
+        };
+
+        // set the adapter on the list view
+        contactsListView.setAdapter(contactsListAdapter);
     }
+
+
+    private void requestContactReadPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSION_REQUEST_READ_CONTACTS);
+            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an app-defined int constant ("request-code"). The callback method gets the result of the request.
+        } else {
+            // already granted, or old runtime without individual permissions
+            //initContacts();
+            Intent intent = new Intent(this, AddressbookSelectActivity.class);
+            startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST_READ_CONTACTS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // proceed as required by app logic
+                    Intent intent = new Intent(this, AddressbookSelectActivity.class);
+                    startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
+                } else {
+                    // do something reasonable if permissions are denied
+                    Toast toast = Toast.makeText(getApplicationContext(), "Permission not granted", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -100,6 +180,20 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bundle bundle = data.getExtras();
+
+        if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
+            Contact c = (Contact) bundle.get(AddressbookSelectActivity.RESPONSE_ENTRY);
+            if (!contactsList.contains(c)) {
+                contactsList.add(c);
+                contactsListAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     private void saveTodo() {
