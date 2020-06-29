@@ -129,7 +129,7 @@ public class TodoListActivity extends AppCompatActivity {
             intent.putExtra(EditAddTodoActivity.EXTRA_MONTH, todo.getDue_month());
             intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
             intent.putExtra(EditAddTodoActivity.EXTRA_HOUR, todo.getDue_hour());
-            intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
+            intent.putExtra(EditAddTodoActivity.EXTRA_MINUTE, todo.getDue_day());
             Log.d("ZUTUN TRANSFERIERT", String.valueOf(todo.getDue_year()));
             startActivityForResult(intent, edit_todo_request);
         });

@@ -34,6 +34,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TodoHolder holder, int position) {
+
         Todo current = todos.get(position);
         Calendar c = Calendar.getInstance();
         Calendar now = Calendar.getInstance();
@@ -48,7 +49,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
 
         holder.text_view_tile.setText(current.getTitle());
         holder.text_view_content.setText(current.getContent());
-        holder.check_important.setText(String.valueOf(current.isImportaint()));
+        if (current.isImportaint())
+            holder.check_important.setText("Important");
+        else holder.check_important.setText("regular");
 
        // holder.text_view_tile.setText(extras.getBoolean);
 
@@ -72,7 +75,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
 
     public void setTodos(List<Todo> todos) {
         this.todos = todos;
-        Collections.sort(todos, new CompareRecent());
+        //Collections.sort(todos, new CompareRecent());
         notifyDataSetChanged();
     }
 
