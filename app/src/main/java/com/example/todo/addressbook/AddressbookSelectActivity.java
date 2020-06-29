@@ -28,8 +28,8 @@ import java.util.List;
 
 public class AddressbookSelectActivity extends AppCompatActivity {
 
-	private static final int CONTACT_SELECTED = 0;
-	private static final String RESPONSE_ENTRY = "entry";
+	public static final int SELECT_CONTACT = 0;
+	public static final String RESPONSE_ENTRY = "entry";
 	protected static String logger = AddressbookSelectActivity.class.getSimpleName();
 
 	/**
