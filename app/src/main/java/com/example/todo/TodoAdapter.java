@@ -1,15 +1,20 @@
 package com.example.todo;
 
 import android.graphics.Color;
-import android.icu.text.TimeZoneFormat;
-import android.os.Bundle;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.ROOM.Todo;
+import com.example.todo.Widgets.DoubleClickListener;
+import com.example.todo.sort.ComparatorDueDate;
+import com.example.todo.sort.CompareRecent;
 
 import java.text.DateFormat;
 import java.util.*;
@@ -42,7 +47,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
 
         holder.text_view_tile.setText(current.getTitle());
         holder.text_view_content.setText(current.getContent());
-        holder.text_view_importaint.setText(String.valueOf(current.isImportaint()));
+        holder.check_important.setText(String.valueOf(current.isImportaint()));
 
        // holder.text_view_tile.setText(extras.getBoolean);
 
@@ -66,6 +71,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
 
     public void setTodos(List<Todo> todos) {
         this.todos = todos;
+        Collections.sort(todos, new CompareRecent());
         notifyDataSetChanged();
     }
 
@@ -77,12 +83,16 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
         return todos.get(position);
     }
 
+    public void sortByDue(){
+        Collections.sort(todos, new ComparatorDueDate());
+        //setTodos(todos);
+    }
 
     //Holder Class for the top viewer (TOP)
     class TodoHolder extends RecyclerView.ViewHolder {
         private TextView text_view_tile;
         private TextView text_view_content;
-        private TextView text_view_importaint;
+        private TextView check_important;
         private TextView text_view_days;
         private TextView text_view_time;
 
@@ -90,15 +100,32 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
             super(itemView);
             text_view_tile = itemView.findViewById(R.id.text_view_title);
             text_view_content = itemView.findViewById(R.id.text_view_content);
-            text_view_importaint = itemView.findViewById(R.id.text_view_important);
+            check_important = itemView.findViewById(R.id.check_important);
             text_view_days = itemView.findViewById(R.id.text_view_date);
             text_view_time = itemView.findViewById(R.id.text_view_time);
-            itemView.setOnClickListener(new View.OnClickListener() {
+/*            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (onItemClickListener != null && position != RecyclerView.NO_POSITION)
                         onItemClickListener.OnItemClick(todos.get(position));
+                }
+
+            });*/
+            itemView.setOnClickListener(new DoubleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    int position = getAdapterPosition();
+                    if (onItemClickListener != null && position != RecyclerView.NO_POSITION)
+                        onItemClickListener.OnItemClick(todos.get(position));
+                }
+
+                @Override
+                public void onDoubleClick(View v) {
+                    int position = getAdapterPosition();
+                    if (onItemClickListener != null && position != RecyclerView.NO_POSITION)
+                        onItemClickListener.OnItemClick(todos.get(position));
+
                 }
             });
 

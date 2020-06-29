@@ -21,6 +21,11 @@ public interface TodoDAO {
     void deleteAll();
 
     @Query("SELECT * FROM todo_table ORDER BY importaint DESC")
-    LiveData<List<Todo>> getAllTodos();
+    LiveData<List<Todo>> getAllTodosImportant();
+
+
+    @Query("SELECT * FROM todo_table ORDER BY title")
+    LiveData<List<Todo>> getAllTodosTitle();
+
 
 }

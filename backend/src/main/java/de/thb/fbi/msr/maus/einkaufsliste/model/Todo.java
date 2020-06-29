@@ -11,6 +11,7 @@ public class Todo implements Serializable {
 
 	private String content;
 
+	private  boolean done;
 
 	private boolean importaint;
 
@@ -24,7 +25,9 @@ public class Todo implements Serializable {
 
 	private int due_year;
 
-	public Todo(String title, String content, boolean importaint, int due_minute, int due_hour, int due_day, int due_month, int due_year) {
+
+
+	public Todo(String title, String content, boolean importaint, boolean done, int due_minute, int due_hour, int due_day, int due_month, int due_year) {
 		this.title = title;
 		this.content = content;
 		this.importaint = importaint;
@@ -35,11 +38,18 @@ public class Todo implements Serializable {
 		this.due_year = due_year;
 	}
 
+
 	public Todo() {
 
 	}
 
 
+	public boolean isDone() {
+		return done;
+	}
+	public void setDone(boolean done) {
+		this.done = done;
+	}
 	public void setId(int id) {
 		this.id = id;
 	}

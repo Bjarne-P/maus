@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,13 +29,15 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public static final String EXTRA_DAY = "com.example.todo.extra_day";
     public static final String EXTRA_HOUR = "com.example.todo.extra_hour";
     public static final String EXTRA_MINUTE = "com.example.todo.extra_minute";
+    public static final String EXTRA_DONE = "com.example.todo.extra_done";
+
 
     private Button setTime;
     private Button setDate;
     private EditText edit_name;
     private EditText edit_content;
     private CheckBox set_importaint;
-    Calendar c = Calendar.getInstance();
+    Calendar calendar = Calendar.getInstance();
 
 
     @Override
@@ -46,7 +49,8 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         edit_name = findViewById(R.id.edit_Name);
         edit_content = findViewById(R.id.edit_Beschreibung);
         set_importaint = findViewById(R.id.set_important);
-        final Calendar calendar = Calendar.getInstance();
+
+        //final Calendar calendar = Calendar.getInstance();
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Todo");
@@ -59,14 +63,23 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             edit_name.setText(args.getString(EXTRA_TITLE));
             edit_content.setText(args.getString(EXTRA_CONTENT));
             set_importaint.setChecked(args.getBoolean(EXTRA_IMPORTAINT));
+            Log.d("ZUTUN Angekommen",String.valueOf(args.getInt(EXTRA_HOUR)));
+            Log.d("Zutun 3", String.valueOf(args.getInt(EXTRA_HOUR)));
+
             calendar.set(args.getInt(EXTRA_YEAR), args.getInt(EXTRA_MONTH),
                     args.getInt(EXTRA_DAY), args.getInt(EXTRA_HOUR),
                     args.getInt(EXTRA_MINUTE));
+
+            Log.d("Zutun Angekommen2" , calendar.toString());
+            Log.d("Zutun", String.valueOf(calendar.YEAR) );
+
+
+            Toast.makeText(this, DateFormat.getDateInstance().format(calendar.getTime()), Toast.LENGTH_SHORT).show();
         } else setTitle("Add Todo");
 
         if(intent.hasExtra(EXTRA_ID)){
             setTime.setText(String.format("%02d", calendar.HOUR) + ":" + String.format("%02d", calendar.MINUTE));
-            setDate.setText(DateFormat.getDateInstance().format(c.getTime()));
+            setDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
         }else{
             setTime.setText("Set Due Time");
             setDate.setText("Set Due Date");
@@ -91,15 +104,20 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        c.set(Calendar.HOUR, hourOfDay);
-        c.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        Toast.makeText(this,  String.format("%02d", calendar.HOUR) ,Toast.LENGTH_SHORT).show();
+        setTime.setText(String.format("%02d", calendar.HOUR) + ":" + String.format("%02d", calendar.MINUTE));
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        Log.d("zutun year", String.valueOf(year));
+        Log.d("zutun mont", String.valueOf(month));
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        setDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
     }
 
     private void saveTodo() {
@@ -116,11 +134,12 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         i.putExtra(EXTRA_TITLE, title);
         i.putExtra(EXTRA_CONTENT, content);
         i.putExtra(EXTRA_IMPORTAINT, importaint);
-        i.putExtra(EXTRA_YEAR, c.get(Calendar.YEAR));
-        i.putExtra(EXTRA_MONTH, c.get(Calendar.MONTH));
-        i.putExtra(EXTRA_DAY, c.get(Calendar.DAY_OF_MONTH));
-        i.putExtra(EXTRA_HOUR, c.get(Calendar.HOUR));
-        i.putExtra(EXTRA_MINUTE, c.get(Calendar.MINUTE));
+        i.putExtra(EXTRA_YEAR, calendar.get(Calendar.YEAR));
+        i.putExtra(EXTRA_MONTH, calendar.get(Calendar.MONTH));
+        i.putExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
+        i.putExtra(EXTRA_HOUR, calendar.get(Calendar.HOUR));
+        i.putExtra(EXTRA_MINUTE, calendar.get(Calendar.MINUTE));
+        i.putExtra(EXTRA_DONE, false);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {

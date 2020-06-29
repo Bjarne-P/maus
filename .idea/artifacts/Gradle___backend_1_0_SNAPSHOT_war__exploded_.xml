@@ -14,6 +14,21 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="backend" />
+          <element id="library" level="project" name="Gradle: room-runtime-2.2.5" />
+          <element id="library" level="project" name="Gradle: sqlite-framework-2.0.1" />
+          <element id="library" level="project" name="Gradle: sqlite-2.0.1" />
+          <element id="library" level="project" name="Gradle: core-runtime-2.0.1" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Gradle: jackson-databind-2.8.5" />
+          <element id="library" level="project" name="Gradle: scannotation-1.0.3" />
+          <element id="library" level="project" name="Gradle: log4j-1.2.16" />
+          <element id="library" level="project" name="Gradle: jackson-annotations-2.8.0" />
+          <element id="library" level="project" name="Gradle: jackson-core-2.8.5" />
+          <element id="library" level="project" name="Gradle: javassist-3.12.1.GA" />
+          <element id="library" level="project" name="Gradle: room-common-2.2.5" />
+          <element id="library" level="project" name="Gradle: core-common-2.0.1" />
+          <element id="library" level="project" name="Gradle: annotation-1.1.0" />
         </element>
       </element>
     </root>

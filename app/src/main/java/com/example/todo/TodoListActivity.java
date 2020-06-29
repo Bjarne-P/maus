@@ -3,27 +3,31 @@ package com.example.todo;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
+import android.util.Log;
+import android.view.*;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.ROOM.Todo;
+import com.example.todo.sort.ComparatorDueDate;
+import com.example.todo.sort.CompareRecent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import org.w3c.dom.Text;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
 public class TodoListActivity extends AppCompatActivity {
+    public boolean Timeflag = false;
+
     public final static int add_todo_request = 1;
     public final static int edit_todo_request = 2;
 
@@ -52,6 +56,7 @@ public class TodoListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
 
+
         todoViewmodel = new ViewModelProvider(this).get(TodoViewmodel.class);
         todoViewmodel.getAllTodos().observe(this, new Observer<List<Todo>>() {
             @Override
@@ -60,10 +65,25 @@ public class TodoListActivity extends AppCompatActivity {
             }
         });
 
+        final TextView check_important = findViewById(R.id.check_important);
+
+        /*check_important.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (check_important.isChecked()){
+                   // adapter.getTodoAt();
+                }
+            }
+        });
+*/
+
+        Collections.sort(adapter.getTodos(), new ComparatorDueDate());
+        adapter.sortByDue();
 
 
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,  ItemTouchHelper.RIGHT) {
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -81,7 +101,7 @@ public class TodoListActivity extends AppCompatActivity {
         }).attachToRecyclerView(recyclerView);
 
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0 ,ItemTouchHelper.LEFT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
@@ -97,22 +117,21 @@ public class TodoListActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(new TodoAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(Todo todo) {
-                Intent intent = new Intent(TodoListActivity.this, EditAddTodoActivity.class);
-                intent.putExtra(EditAddTodoActivity.EXTRA_ID, todo.getId());
-                intent.putExtra(EditAddTodoActivity.EXTRA_TITLE, todo.getTitle());
-                intent.putExtra(EditAddTodoActivity.EXTRA_CONTENT, todo.getContent());
-                intent.putExtra(EditAddTodoActivity.EXTRA_IMPORTAINT, todo.isImportaint());
-                intent.putExtra(EditAddTodoActivity.EXTRA_YEAR, todo.getDue_year());
-                intent.putExtra(EditAddTodoActivity.EXTRA_MONTH, todo.getDue_month());
-                intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
-                intent.putExtra(EditAddTodoActivity.EXTRA_HOUR, todo.getDue_hour());
-                intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
-                startActivityForResult(intent, edit_todo_request);
-            }
+        adapter.setOnItemClickListener(todo -> {
+            Intent intent = new Intent(TodoListActivity.this, EditAddTodoActivity.class);
+            intent.putExtra(EditAddTodoActivity.EXTRA_ID, todo.getId());
+            intent.putExtra(EditAddTodoActivity.EXTRA_TITLE, todo.getTitle());
+            intent.putExtra(EditAddTodoActivity.EXTRA_CONTENT, todo.getContent());
+            intent.putExtra(EditAddTodoActivity.EXTRA_IMPORTAINT, todo.isImportaint());
+            intent.putExtra(EditAddTodoActivity.EXTRA_YEAR, todo.getDue_year());
+            intent.putExtra(EditAddTodoActivity.EXTRA_MONTH, todo.getDue_month());
+            intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
+            intent.putExtra(EditAddTodoActivity.EXTRA_HOUR, todo.getDue_hour());
+            intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
+            Log.d("ZUTUN TRANSFERIERT",String.valueOf(todo.getDue_year()));
+            startActivityForResult(intent, edit_todo_request);
         });
+
 
 
         //nachher neu machen
@@ -144,13 +163,14 @@ public class TodoListActivity extends AppCompatActivity {
             String title = data.getStringExtra(EditAddTodoActivity.EXTRA_TITLE);
             String content = data.getStringExtra(EditAddTodoActivity.EXTRA_CONTENT);
             boolean importaint = bundle.getBoolean(EditAddTodoActivity.EXTRA_IMPORTAINT, false);
+            boolean done = bundle.getBoolean(EditAddTodoActivity.EXTRA_DONE, false);
             int year = bundle.getInt(EditAddTodoActivity.EXTRA_YEAR, 2020);
             int month = bundle.getInt(EditAddTodoActivity.EXTRA_MONTH, 1);
             int day = bundle.getInt(EditAddTodoActivity.EXTRA_DAY, 1);
             int hour = bundle.getInt(EditAddTodoActivity.EXTRA_HOUR, 12);
             int minute = bundle.getInt(EditAddTodoActivity.EXTRA_MINUTE, 0);
 
-            Todo todo = new Todo(title, content, importaint, minute, hour, day, month, year);
+            Todo todo = new Todo(title, content, importaint, done ,minute, hour, day, month, year);
             todoViewmodel.insert(todo);
 
             Toast.makeText(this, "Todo saved", Toast.LENGTH_LONG).show();
@@ -170,8 +190,9 @@ public class TodoListActivity extends AppCompatActivity {
             int day = bundle.getInt(EditAddTodoActivity.EXTRA_DAY, 1);
             int hour = bundle.getInt(EditAddTodoActivity.EXTRA_HOUR, 12);
             int minute = bundle.getInt(EditAddTodoActivity.EXTRA_MINUTE, 0);
+            boolean done = bundle.getBoolean(EditAddTodoActivity.EXTRA_DONE);
 
-            Todo todo = new Todo(title, content, importaint, minute, hour, day, month, year);
+            Todo todo = new Todo(title, content, importaint,done, minute, hour, day, month, year);
             todo.setId(id);
             todoViewmodel.update(todo);
 
@@ -192,11 +213,9 @@ public class TodoListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_all:
-                todoViewmodel.deleteAll();
-                Toast.makeText(this, "All Todos deleted", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.sort_by_due:
-
+                TodoAdapter adapter = new TodoAdapter();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

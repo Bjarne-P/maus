@@ -13,7 +13,7 @@ public class TodoRepository {
     public TodoRepository(Application application){
         TodoDB db = TodoDB.getDB(application);
         todoDAO = db.todoDAO();
-        allTodos = todoDAO.getAllTodos();
+        allTodos = todoDAO.getAllTodosImportant();
     }
 
     public void insert(Todo todo){
@@ -31,6 +31,7 @@ public class TodoRepository {
     public void deleteAllTodos(){
         new DeleteAllAsyncTask(todoDAO).execute();
     }
+
 
     public LiveData<List<Todo>> getAllTodos() {
         return allTodos;

@@ -1,13 +1,14 @@
 package com.example.todo.ROOM;
 
 
+import android.util.Log;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
 @Entity(tableName = "todo_table")
-public class Todo implements Serializable {
+public class Todo {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -16,6 +17,7 @@ public class Todo implements Serializable {
 
     private String content;
 
+    private boolean done;
 
     private boolean importaint;
 
@@ -29,7 +31,9 @@ public class Todo implements Serializable {
 
     private int due_year;
 
-    public Todo(String title, String content, boolean importaint, int due_minute, int due_hour, int due_day, int due_month, int due_year) {
+
+
+    public Todo(String title, String content, boolean importaint, boolean done, int due_minute, int due_hour, int due_day, int due_month, int due_year) {
         this.title = title;
         this.content = content;
         this.importaint = importaint;
@@ -38,6 +42,8 @@ public class Todo implements Serializable {
         this.due_day = due_day;
         this.due_month = due_month;
         this.due_year = due_year;
+        this.done = done;
+
     }
 
 
@@ -59,6 +65,10 @@ public class Todo implements Serializable {
 
     public boolean isImportaint() {
         return importaint;
+    }
+
+    public boolean isDone() {
+        return done;
     }
 
     public int getDue_year() {
@@ -84,4 +94,7 @@ public class Todo implements Serializable {
     public void setImportaint(boolean importaint) {
         this.importaint = importaint;
     }
+
+
+
 }
