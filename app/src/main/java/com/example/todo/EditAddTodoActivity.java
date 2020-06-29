@@ -63,6 +63,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         edit_name = findViewById(R.id.edit_Name);
         edit_content = findViewById(R.id.edit_Beschreibung);
         set_importaint = findViewById(R.id.set_important);
+        contactsListView = findViewById(R.id.embeddedContactsList);
         final Calendar calendar = Calendar.getInstance();
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
@@ -122,7 +123,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             // already granted, or old runtime without individual permissions
             //initContacts();
             Intent intent = new Intent(this, AddressbookSelectActivity.class);
-            startActivityForResult(intent, CONTACT_SELECTED);
+            startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
         }
     }
 
@@ -132,12 +133,12 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             case MY_PERMISSION_REQUEST_READ_CONTACTS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // proceed as required by app logic
-                    //initContacts();
                     Intent intent = new Intent(this, AddressbookSelectActivity.class);
-                    startActivityForResult(intent, CONTACT_SELECTED);
+                    startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
                 } else {
-                    // do something reasonable if permissions are denied, e.g., disable contacts access API and also disable or remove UI elements
-                    //this.accessor = new NoopContactsAccessor();
+                    // do something reasonable if permissions are denied
+                    Toast toast = Toast.makeText(getApplicationContext(), "Permission not granted", Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         }
@@ -163,7 +164,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         Bundle bundle = data.getExtras();
 
         if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
-            contactsList.add((Contact) bundle.get("RESPONSE_ENTRY"));
+            Contact c = (Contact) bundle.get(AddressbookSelectActivity.RESPONSE_ENTRY);
+            if (!contactsList.contains(c))
+                contactsList.add(c);
         }
     }
 
