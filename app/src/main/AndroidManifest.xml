@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.todo">
+          xmlns:tools="http://schemas.android.com/tools" package="com.example.todo">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
             android:allowBackup="true"
@@ -8,14 +11,16 @@
             android:label="Todo"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".EditAddTodoActivity"
                   android:parentActivityName=".TodoListActivity">
         </activity>
         <activity android:name=".LoginActivity">
 
         </activity>
-
+        <activity android:name=".addressbook.AddressbookSelectActivity">
+        </activity>
         <activity android:name=".TodoListActivity"
                   android:launchMode="singleTop">
             <intent-filter>
