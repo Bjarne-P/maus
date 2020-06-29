@@ -17,6 +17,7 @@
               android:id="@+id/edit_Beschreibung"
               android:hint="Beschreibung"/>
 
+    <androidx.legacy.widget.Space android:layout_width="match_parent" android:layout_height="20dp"></androidx.legacy.widget.Space>
 
     <Button android:id="@+id/set_due_date"
             android:layout_width="150dp"
@@ -27,6 +28,15 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Set Due Time"/>
+
+    <androidx.legacy.widget.Space android:layout_width="match_parent" android:layout_height="20dp"></androidx.legacy.widget.Space>
+
+    <CheckBox android:layout_width="match_parent"
+              android:id="@+id/set_important"
+              android:layout_height="wrap_content"
+              android:text="Important Activity"/>
+
+    <androidx.legacy.widget.Space android:layout_width="match_parent" android:layout_height="20dp"></androidx.legacy.widget.Space>
 
     <Button android:id="@+id/add_contact"
             android:layout_width="150dp"
@@ -39,11 +49,6 @@
             android:layout_height="0dp"
             android:layout_weight="1.0" >
     </ListView>
-
-    <CheckBox android:layout_width="match_parent"
-              android:id="@+id/set_important"
-              android:layout_height="wrap_content"
-              android:text="Important Activity"/>
 
 
 </LinearLayout>
