@@ -166,6 +166,16 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
 
         // set the adapter on the list view
         contactsListView.setAdapter(contactsListAdapter);
+
+        // set a listener that clicks on an item from the list
+        contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View itemView, int itemPosition, long itemId) {
+                Log.i(logger, "onItemClick: position is: " + itemPosition + ", id is: " + itemId);
+                Contact item = contactsList.get(itemPosition);
+                contactsListAdapter.remove(item);
+            }
+        });
     }
 
 
@@ -226,8 +236,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
                 Contact c = (Contact) bundle.get(AddressbookSelectActivity.RESPONSE_ENTRY);
                 if (!contactsList.contains(c)) {
-                    contactsList.add(c);
-                    contactsListAdapter.notifyDataSetChanged();
+                    contactsListAdapter.add(c);
                 }
             }
         }
