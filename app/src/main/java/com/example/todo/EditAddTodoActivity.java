@@ -6,10 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,6 +48,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     Calendar c = Calendar.getInstance();
     private Button add_Contact;
     private ListView contactsListView;
+    private ArrayAdapter<Contact> contactsListAdapter;
 
 
     @Override
@@ -112,6 +110,33 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 requestContactReadPermission();
             }
         });
+
+        //contactsList.add(new Contact());
+        contactsListAdapter = new ArrayAdapter<Contact>(this, R.layout.addressbookitem_in_listview, contactsList) {
+            @Override
+            public View getView(final int position, View view, ViewGroup parent) {
+
+                final ViewGroup listItemView = (ViewGroup) (view == null
+                        ? getLayoutInflater().inflate(R.layout.addressbookitem_in_listview, null) : view);
+
+                TextView nameView = (TextView) listItemView.findViewById(R.id.contactName);
+
+                final Contact contactItem = contactsList.get(position);
+
+                if (contactItem.getName() != null) {
+                    nameView.setText(contactItem.getName());
+                } else if (contactItem.getEmails().size() > 0) {
+                    nameView.setText(String.valueOf(contactItem.getEmails().get(0)));
+                    ;
+                } else {
+                    nameView.setText("N.N.");
+                }
+                return listItemView;
+            }
+        };
+
+        // set the adapter on the list view
+        contactsListView.setAdapter(contactsListAdapter);
     }
 
 
@@ -165,8 +190,10 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
 
         if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
             Contact c = (Contact) bundle.get(AddressbookSelectActivity.RESPONSE_ENTRY);
-            if (!contactsList.contains(c))
+            if (!contactsList.contains(c)) {
                 contactsList.add(c);
+                contactsListAdapter.notifyDataSetChanged();
+            }
         }
     }
 
