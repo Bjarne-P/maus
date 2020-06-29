@@ -27,8 +27,8 @@ public class LoginActivity extends AppCompatActivity {
         l.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(editPassword.length() < 8){
-                    editPassword.setError("Your Password must be 8 digits long!");
+                if(editPassword.length() < 6){
+                    editPassword.setError("Your Password must be 6 digits long!");
                 }
                 else if (!Patterns.EMAIL_ADDRESS.matcher(editEmail.getText().toString()).matches()) {
                     editEmail.setError("Please Enter a valid email address");

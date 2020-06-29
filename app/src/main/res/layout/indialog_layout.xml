@@ -17,7 +17,6 @@
               android:id="@+id/edit_Beschreibung"
               android:hint="Beschreibung"/>
 
-
     <Button android:id="@+id/set_due_date"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -32,6 +31,13 @@
               android:id="@+id/set_important"
               android:layout_height="wrap_content"
               android:text="Important Activity"/>
+
+    <CheckBox android:layout_width="match_parent"
+              android:id="@+id/set_done"
+              android:layout_height="wrap_content"
+              android:text="Done"/>
+
+
 
 
 </LinearLayout>

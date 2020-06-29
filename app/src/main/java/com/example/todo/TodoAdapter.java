@@ -2,6 +2,7 @@ package com.example.todo;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,10 +123,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
 
                 @Override
                 public void onDoubleClick(View v) {
+                    Log.d("Doppelclick", "123");
                     int position = getAdapterPosition();
                     if (onItemClickListener != null && position != RecyclerView.NO_POSITION)
                         onItemClickListener.OnItemClick(todos.get(position));
-
                 }
             });
 

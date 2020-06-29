@@ -30,6 +30,8 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public static final String EXTRA_HOUR = "com.example.todo.extra_hour";
     public static final String EXTRA_MINUTE = "com.example.todo.extra_minute";
     public static final String EXTRA_DONE = "com.example.todo.extra_done";
+    public static final String EXTRA_DELETE_FLAG = "com.example.todo.extra_flag";
+
 
 
     private Button setTime;
@@ -37,7 +39,8 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     private EditText edit_name;
     private EditText edit_content;
     private CheckBox set_importaint;
-    Calendar calendar = Calendar.getInstance();
+    private CheckBox set_done;
+    private Calendar calendar = Calendar.getInstance();
 
 
     @Override
@@ -49,8 +52,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         edit_name = findViewById(R.id.edit_Name);
         edit_content = findViewById(R.id.edit_Beschreibung);
         set_importaint = findViewById(R.id.set_important);
+        set_done = findViewById(R.id.set_done);
 
-        //final Calendar calendar = Calendar.getInstance();
+
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Todo");
@@ -58,11 +62,13 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_ID)) {
+
             setTitle("Edit Todo");
             Bundle args = intent.getExtras();
             edit_name.setText(args.getString(EXTRA_TITLE));
             edit_content.setText(args.getString(EXTRA_CONTENT));
             set_importaint.setChecked(args.getBoolean(EXTRA_IMPORTAINT));
+            set_done.setChecked(args.getBoolean(EXTRA_DONE));
             Log.d("ZUTUN Angekommen",String.valueOf(args.getInt(EXTRA_HOUR)));
             Log.d("Zutun 3", String.valueOf(args.getInt(EXTRA_HOUR)));
 
@@ -70,15 +76,21 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                     args.getInt(EXTRA_DAY), args.getInt(EXTRA_HOUR),
                     args.getInt(EXTRA_MINUTE));
 
-            Log.d("Zutun Angekommen2" , calendar.toString());
-            Log.d("Zutun", String.valueOf(calendar.YEAR) );
+            Log.d("Zutun Kalender" , calendar.toString());
+
+            Log.d("Zutun JAHR", String.valueOf(calendar.get(calendar.YEAR)) );
 
 
             Toast.makeText(this, DateFormat.getDateInstance().format(calendar.getTime()), Toast.LENGTH_SHORT).show();
-        } else setTitle("Add Todo");
+        }
+        else{
+            setTitle("Add Todo");
+            set_done.setVisibility(View.GONE);
+        }
 
         if(intent.hasExtra(EXTRA_ID)){
-            setTime.setText(String.format("%02d", calendar.HOUR) + ":" + String.format("%02d", calendar.MINUTE));
+
+            setTime.setText(String.format("%02d",calendar.get(calendar.HOUR))  + ":" + String.format("%02d", calendar.get(calendar.MINUTE)));
             setDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
         }else{
             setTime.setText("Set Due Time");
@@ -88,7 +100,8 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timePicker = new TimePickerFragment(calendar.HOUR_OF_DAY, calendar.MINUTE);
+                DialogFragment timePicker = new TimePickerFragment(calendar.get(calendar.HOUR_OF_DAY),
+                        calendar.get(calendar.MINUTE));
                 timePicker.show(getSupportFragmentManager(), "Timepicker");
             }
         });
@@ -96,10 +109,13 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment datePicker = new DatePickerFragment(calendar.DAY_OF_MONTH, calendar.MONTH, calendar.YEAR);
+                DialogFragment datePicker = new DatePickerFragment(calendar.get(calendar.DAY_OF_MONTH), calendar.get(calendar.MONTH),
+                        calendar.get(calendar.YEAR));
                 datePicker.show(getSupportFragmentManager(), "Datepicker");
             }
         });
+
+
     }
 
     @Override
@@ -120,10 +136,11 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
     }
 
-    private void saveTodo() {
+    private void saveTodo(boolean flag) {
         String title = edit_name.getText().toString();
         String content = edit_content.getText().toString();
         boolean importaint = set_importaint.isChecked();
+        boolean done = set_done.isChecked();
 
         if (title.trim().isEmpty() || content.trim().isEmpty()) {
             Toast.makeText(this, "Please add Title and Content", Toast.LENGTH_LONG).show();
@@ -139,7 +156,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         i.putExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
         i.putExtra(EXTRA_HOUR, calendar.get(Calendar.HOUR));
         i.putExtra(EXTRA_MINUTE, calendar.get(Calendar.MINUTE));
-        i.putExtra(EXTRA_DONE, false);
+        i.putExtra(EXTRA_DONE, done);
+        if (flag)
+            i.putExtra(EXTRA_DELETE_FLAG, true);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -148,6 +167,8 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setResult(RESULT_OK, i);
         finish();
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,7 +181,10 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-                saveTodo();
+                saveTodo(false);
+                return true;
+            case R.id.delete2:
+                saveTodo(true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

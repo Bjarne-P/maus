@@ -1,5 +1,6 @@
 package com.example.todo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -56,7 +58,6 @@ public class TodoListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
 
-
         todoViewmodel = new ViewModelProvider(this).get(TodoViewmodel.class);
         todoViewmodel.getAllTodos().observe(this, new Observer<List<Todo>>() {
             @Override
@@ -79,8 +80,6 @@ public class TodoListActivity extends AppCompatActivity {
 
         Collections.sort(adapter.getTodos(), new ComparatorDueDate());
         adapter.sortByDue();
-
-
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -110,9 +109,11 @@ public class TodoListActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Todo todo = adapter.getTodoAt(viewHolder.getAdapterPosition());
+
                 if (todo.isImportaint())
                     todo.setImportaint(false);
                 else todo.setImportaint(true);
+
                 todoViewmodel.update(adapter.getTodoAt(viewHolder.getAdapterPosition()));
             }
         }).attachToRecyclerView(recyclerView);
@@ -123,15 +124,15 @@ public class TodoListActivity extends AppCompatActivity {
             intent.putExtra(EditAddTodoActivity.EXTRA_TITLE, todo.getTitle());
             intent.putExtra(EditAddTodoActivity.EXTRA_CONTENT, todo.getContent());
             intent.putExtra(EditAddTodoActivity.EXTRA_IMPORTAINT, todo.isImportaint());
+            intent.putExtra(EditAddTodoActivity.EXTRA_DONE, todo.isDone());
             intent.putExtra(EditAddTodoActivity.EXTRA_YEAR, todo.getDue_year());
             intent.putExtra(EditAddTodoActivity.EXTRA_MONTH, todo.getDue_month());
             intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
             intent.putExtra(EditAddTodoActivity.EXTRA_HOUR, todo.getDue_hour());
             intent.putExtra(EditAddTodoActivity.EXTRA_DAY, todo.getDue_day());
-            Log.d("ZUTUN TRANSFERIERT",String.valueOf(todo.getDue_year()));
+            Log.d("ZUTUN TRANSFERIERT", String.valueOf(todo.getDue_year()));
             startActivityForResult(intent, edit_todo_request);
         });
-
 
 
         //nachher neu machen
@@ -170,7 +171,7 @@ public class TodoListActivity extends AppCompatActivity {
             int hour = bundle.getInt(EditAddTodoActivity.EXTRA_HOUR, 12);
             int minute = bundle.getInt(EditAddTodoActivity.EXTRA_MINUTE, 0);
 
-            Todo todo = new Todo(title, content, importaint, done ,minute, hour, day, month, year);
+            Todo todo = new Todo(title, content, importaint, done, minute, hour, day, month, year);
             todoViewmodel.insert(todo);
 
             Toast.makeText(this, "Todo saved", Toast.LENGTH_LONG).show();
@@ -191,16 +192,36 @@ public class TodoListActivity extends AppCompatActivity {
             int hour = bundle.getInt(EditAddTodoActivity.EXTRA_HOUR, 12);
             int minute = bundle.getInt(EditAddTodoActivity.EXTRA_MINUTE, 0);
             boolean done = bundle.getBoolean(EditAddTodoActivity.EXTRA_DONE);
+            boolean del = bundle.getBoolean(EditAddTodoActivity.EXTRA_DELETE_FLAG);
 
-            Todo todo = new Todo(title, content, importaint,done, minute, hour, day, month, year);
+            Todo todo = new Todo(title, content, importaint, done, minute, hour, day, month, year);
             todo.setId(id);
-            todoViewmodel.update(todo);
-
-            Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
+            if (del) {
+                delete(todo);
+            } else {
+                todoViewmodel.update(todo);
+                Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Toast.makeText(this, "not saved", Toast.LENGTH_LONG).show();
         }
     }
+
+
+    public void delete(Todo todo){
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmation")
+                .setMessage("Do you really want to delete this Todo")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        todoViewmodel.delete(todo);
+                        Toast.makeText(TodoListActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+                    }
+                }).setNegativeButton(android.R.string.no, null).show();
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -208,6 +229,8 @@ public class TodoListActivity extends AppCompatActivity {
         a.inflate(R.menu.delete_all, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

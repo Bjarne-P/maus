@@ -13,7 +13,7 @@ public class TodoRepository {
     public TodoRepository(Application application){
         TodoDB db = TodoDB.getDB(application);
         todoDAO = db.todoDAO();
-        allTodos = todoDAO.getAllTodosImportant();
+        allTodos = todoDAO.getAllTodosDone();
     }
 
     public void insert(Todo todo){
@@ -33,7 +33,7 @@ public class TodoRepository {
     }
 
 
-    public LiveData<List<Todo>> getAllTodos() {
+    public LiveData<List<Todo>> getAllTodosImportant() {
         return allTodos;
     }
 

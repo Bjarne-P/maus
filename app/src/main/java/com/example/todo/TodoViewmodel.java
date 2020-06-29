@@ -16,7 +16,7 @@ public class TodoViewmodel extends AndroidViewModel {
     public TodoViewmodel(@NonNull Application application) {
         super(application);
         repository = new TodoRepository(application);
-        allTodos = repository.getAllTodos();
+        allTodos = repository.getAllTodosImportant();
     }
 
     public void insert(Todo todo){

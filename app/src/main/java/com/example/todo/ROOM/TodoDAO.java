@@ -20,8 +20,8 @@ public interface TodoDAO {
     @Query("DELETE FROM todo_table")
     void deleteAll();
 
-    @Query("SELECT * FROM todo_table ORDER BY importaint DESC")
-    LiveData<List<Todo>> getAllTodosImportant();
+    @Query("SELECT * FROM todo_table ORDER BY done DESC")
+    LiveData<List<Todo>> getAllTodosDone();
 
 
     @Query("SELECT * FROM todo_table ORDER BY title")

@@ -15,7 +15,7 @@
               android:layout_height="wrap_content"
               android:id="@+id/editPassword"
               android:hint="Password"
-              android:maxLength="8"
+              android:maxLength="6"
               android:inputType="numberPassword"
               android:layout_marginHorizontal="15dp"/>
 
