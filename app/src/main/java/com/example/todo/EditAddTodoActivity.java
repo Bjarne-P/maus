@@ -1,8 +1,10 @@
 package com.example.todo;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.TypedArrayUtils;
 import androidx.fragment.app.DialogFragment;
 import com.example.todo.Widgets.DatePickerFragment;
 import com.example.todo.Widgets.TimePickerFragment;
@@ -26,8 +29,10 @@ import com.example.todo.addressbook.model.Contact;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class EditAddTodoActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     private static final int CONTACT_SELECTED = 0;
@@ -58,6 +63,8 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     private Button add_Contact;
     private ListView contactsListView;
     private ArrayAdapter<Contact> contactsListAdapter;
+
+    private AlertDialog.Builder builder;
 
 
     @Override
@@ -164,6 +171,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             }
         };
 
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        builder = new AlertDialog.Builder(this);
+
         // set the adapter on the list view
         contactsListView.setAdapter(contactsListAdapter);
 
@@ -172,11 +182,48 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             @Override
             public void onItemClick(AdapterView<?> adapterView, View itemView, int itemPosition, long itemId) {
                 Log.i(logger, "onItemClick: position is: " + itemPosition + ", id is: " + itemId);
-                Contact item = contactsList.get(itemPosition);
-                contactsListAdapter.remove(item);
+                onContactInPopupClicked(itemPosition, (int) itemId);
             }
         });
     }
+
+    private void onContactInPopupClicked(int itemPosition, int addressId) {
+            Contact c = contactsList.get(itemPosition);
+            // Concatenate mail addresses and phone numbers. Stream requires min SDK 24.
+            String[] addresses = Stream.concat(Arrays.stream(c.getEmails().toArray()), Arrays.stream(c.getPhoneNumbers().toArray())).toArray(String[]::new);
+            final int[] selected = {0}; // Needs to be an array because it is changed from another class.
+
+            // 2. Chain together various setter methods to set the dialog characteristics
+            builder.setTitle(c.getName());
+
+            builder.setSingleChoiceItems(addresses, 0, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i(logger, "DialogInterface.OnClick: which: " + which);
+                    // The 'which' argument contains the index position
+                    // of the selected item
+                    selected[0] = which;
+                }
+            });
+
+            builder.setPositiveButton("Contact", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked Contact button
+                    String msg = "Contacting " + c.getName() + " through " + addresses[selected[0]];
+                    Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked Remove button
+                    contactsListAdapter.remove(c);
+                }
+            });
+
+            // 3. Get the AlertDialog from create()
+            AlertDialog dialog = builder.create();
+
+            dialog.show();
+        }
 
 
     private void requestContactReadPermission() {
