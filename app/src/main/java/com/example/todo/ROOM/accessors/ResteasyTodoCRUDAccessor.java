@@ -7,21 +7,21 @@ import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 
 import java.util.List;
 
-public class ResteasyDataItemCRUDAccessor implements DataItemCRUDAccessor {
+public class ResteasyTodoCRUDAccessor implements TodoCRUDAccessor {
 	
-	protected static String logger = ResteasyDataItemCRUDAccessor.class.getSimpleName();
+	protected static String logger = ResteasyTodoCRUDAccessor.class.getSimpleName();
 
 	/**
 	 * the client via which we access the rest web interface provided by the server
 	 */
-	private DataItemCRUDAccessor restClient;
+	private TodoCRUDAccessor restClient;
 	
-	public ResteasyDataItemCRUDAccessor(String baseUrl) {
+	public ResteasyTodoCRUDAccessor(String baseUrl) {
 
 		Log.i(logger,"initialising restClient for baseUrl: " + baseUrl);
 		
 		// create a client for the server-side implementation of the interface
-		this.restClient = ProxyFactory.create(DataItemCRUDAccessor.class,
+		this.restClient = ProxyFactory.create(TodoCRUDAccessor.class,
 				baseUrl,
 				new ApacheHttpClient4Executor());
 		

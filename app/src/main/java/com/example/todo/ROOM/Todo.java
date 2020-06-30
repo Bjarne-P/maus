@@ -3,12 +3,18 @@ package com.example.todo.ROOM;
 
 import android.util.Log;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 @Entity(tableName = "todo_table")
 public class Todo {
+
+    public enum ItemTypes {
+        TYPE1, TYPE2, TYPE3
+    }
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -45,8 +51,21 @@ public class Todo {
         this.done = done;
 
     }
-
+    @Ignore
     public Todo() {
+
+    }
+    @Ignore
+    public Todo(String title, String content, boolean importaint){
+        Calendar c = Calendar.getInstance();
+        this.title = title;
+        this.content = content;
+        this.importaint = importaint;
+        this.due_minute=(c.get(c.MINUTE));
+        this.due_hour=(c.get(c.HOUR_OF_DAY));
+        this.due_day=(c.get(c.DAY_OF_MONTH));
+        this.due_month=(c.get(c.MONTH));
+        this.due_year=(c.get(c.YEAR));
 
     }
 
@@ -142,7 +161,6 @@ public class Todo {
     public void setImportaint(boolean importaint) {
         this.importaint = importaint;
     }
-
 
 
 }

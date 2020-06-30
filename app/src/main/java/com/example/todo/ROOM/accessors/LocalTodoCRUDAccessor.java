@@ -6,7 +6,7 @@ import com.example.todo.ROOM.Todo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalDataItemCRUDAccessor implements DataItemCRUDAccessor {
+public class LocalTodoCRUDAccessor implements TodoCRUDAccessor {
 	
 	/**
 	 * the list of data items(non-Javadoc)

@@ -2,14 +2,17 @@ package com.example.todo.webview;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
-import de.thb.fbi.msr.maus.einkaufsliste.DataAccessRemoteApplication;
-import de.thb.fbi.msr.maus.einkaufsliste.ItemDetailsActivity;
-import de.thb.fbi.msr.maus.einkaufsliste.R;
+import androidx.annotation.NonNull;
+import com.example.todo.DataAccessRemoteApplication;
+import com.example.todo.EditAddTodoActivity;
+import com.example.todo.R;
+
 
 /**
  * Show the details of an item
@@ -17,8 +20,8 @@ import de.thb.fbi.msr.maus.einkaufsliste.R;
  * @author Joern Kreutel
  * 
  */
-public class WebViewItemDetailsActivity extends ItemDetailsActivity {
-	
+public class WebViewItemDetailsActivity extends EditAddTodoActivity {
+
 	/**
 	 * the webview
 	 */
@@ -40,7 +43,7 @@ public class WebViewItemDetailsActivity extends ItemDetailsActivity {
 		// get the clear button
 		this.clearButton = (Button) findViewById(R.id.clearButton);
 		// and set myself as the onclicklistener
-		this.clearButton.setOnClickListener(this);
+		this.clearButton.setOnClickListener((View.OnClickListener) this);
 		
 		// get the web view
 		this.webview = (WebView) findViewById(R.id.item_webview);
@@ -91,16 +94,11 @@ public class WebViewItemDetailsActivity extends ItemDetailsActivity {
 		}
 
 	}
-	
+
+
 	@Override
-	public void onClick(View view) {
-		if (view == this.clearButton) {
-			Log.i(logger, "got onClick() on clearButton");
-			// this shows how to call a javascript method from a native application component
-			this.webview.loadUrl("javascript:clear()");
-		} else  {
-			super.onClick(view);
-		}
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		return super.onOptionsItemSelected(item);
 	}
 
 }

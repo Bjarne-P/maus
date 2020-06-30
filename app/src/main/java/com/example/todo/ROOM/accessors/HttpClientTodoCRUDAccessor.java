@@ -23,9 +23,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpClientDataItemCRUDAccessor implements DataItemCRUDAccessor {
+public class HttpClientTodoCRUDAccessor implements TodoCRUDAccessor {
 
-	protected static String logger = HttpClientDataItemCRUDAccessor.class
+	protected static String logger = HttpClientTodoCRUDAccessor.class
 			.getSimpleName();
 
 	public static final String MIME_TYPE = "application/json";
@@ -42,7 +42,7 @@ public class HttpClientDataItemCRUDAccessor implements DataItemCRUDAccessor {
 
 	private ObjectMapper mObjectMapper = new ObjectMapper();
 
-	public HttpClientDataItemCRUDAccessor(String baseUrl) {
+	public HttpClientTodoCRUDAccessor(String baseUrl) {
 		this.client = new DefaultHttpClient();
 		this.baseUrl = baseUrl;
 	}

@@ -10,6 +10,11 @@
         <item>HttpURLConnection</item>
     </string-array>
 
+
+    <string name="itemdetails_description">Beschreibung</string>
+    <string name="itemdetails_name">Name</string>
+
+
     <item name="localAccessor" type="integer">0</item>
     <item name="urlClass" type="integer">1</item>
     <item name="apacheHttpClient" type="integer">2</item>

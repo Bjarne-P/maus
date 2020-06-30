@@ -7,6 +7,7 @@ import android.util.Log;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import com.example.todo.DataAccessRemoteApplication;
 import com.example.todo.R;
 
 
@@ -27,7 +28,7 @@ public class ChromeWebViewItemDetailsActivity extends
 		super.onCreate(savedInstanceState);
 
 		// get the web view and set a WebChromeClient on it
-		WebView webview = (WebView) webview.findViewById(R.id.item_webview);
+		WebView webview = (WebView) findViewById(R.id.item_webview);
 
 		try {
 

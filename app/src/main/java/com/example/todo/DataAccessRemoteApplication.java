@@ -22,15 +22,15 @@ public class DataAccessRemoteApplication extends Application {
 	 * the accessors that implement the different alternatives for accessing the
 	 * item list
 	 */
-	private LocalDataItemCRUDAccessor localAccessor;
+	private LocalTodoCRUDAccessor localAccessor;
 
-	private ResteasyDataItemCRUDAccessor resteasyAccessor;
+	private ResteasyTodoCRUDAccessor resteasyAccessor;
 
-	private URLDataItemCRUDAccessor urlAccessor;
+	private URLTodoCRUDAccessor urlAccessor;
 
-	private HttpClientDataItemCRUDAccessor httpClientAccessor;
+	private HttpClientTodoCRUDAccessor httpClientAccessor;
 
-	private HttpURLConnectionDataItemCRUDAccessor httpURLConnectionAccessor;
+	private HttpURLConnectionTodoCRUDAccessor httpURLConnectionAccessor;
 
 	private MediaResourceAccessorImpl mediaResourceAccessor;
 
@@ -38,18 +38,18 @@ public class DataAccessRemoteApplication extends Application {
 		Log.i(logger, "<constructor>()");
 
 		// initialise the accessors
-		this.localAccessor = new LocalDataItemCRUDAccessor();
+		this.localAccessor = new LocalTodoCRUDAccessor();
 
-		this.resteasyAccessor = new ResteasyDataItemCRUDAccessor(
+		this.resteasyAccessor = new ResteasyTodoCRUDAccessor(
 				getRestBaseUrl());
 
-		this.urlAccessor = new URLDataItemCRUDAccessor(
+		this.urlAccessor = new URLTodoCRUDAccessor(
 				getRestBaseUrl() + "/todos");
 
-		this.httpClientAccessor = new HttpClientDataItemCRUDAccessor(
+		this.httpClientAccessor = new HttpClientTodoCRUDAccessor(
 				getRestBaseUrl() + "/todos");
 
-		this.httpURLConnectionAccessor = new HttpURLConnectionDataItemCRUDAccessor(
+		this.httpURLConnectionAccessor = new HttpURLConnectionTodoCRUDAccessor(
 				getRestBaseUrl() + "/todos");
 
 		this.mediaResourceAccessor = new MediaResourceAccessorImpl(
@@ -58,37 +58,37 @@ public class DataAccessRemoteApplication extends Application {
 		Log.i(logger, "<constructor>(): created accessors.");
 	}
 
-	public LocalDataItemCRUDAccessor getLocalAccessor(int accessorId) {
-		LocalDataItemCRUDAccessor accessor;
+	public LocalTodoCRUDAccessor getLocalAccessor(int accessorId) {
+		TodoCRUDAccessor accessor;
 
 		switch (accessorId) {
 		case R.integer.localAccessor:
-			accessor = this.localAccessor;
+			accessor = (TodoCRUDAccessor) this.localAccessor;
 			break;
 		case R.integer.resteasyFramework:
-			accessor = this.resteasyAccessor;
+			accessor = (TodoCRUDAccessor) this.resteasyAccessor;
 			break;
 		case R.integer.urlClass:
-			accessor = this.urlAccessor;
+			accessor = (TodoCRUDAccessor) this.urlAccessor;
 			break;
 		case R.integer.apacheHttpClient:
-			accessor = this.httpClientAccessor;
+			accessor = (TodoCRUDAccessor) this.httpClientAccessor;
 			break;
 		case R.integer.urlConnection:
-			accessor = this.httpURLConnectionAccessor;
+			accessor = (TodoCRUDAccessor) this.httpURLConnectionAccessor;
 			break;
 		default:
 			Log.e(logger, "got unknown accessor id: " + accessorId
 					+ ". Will use local accessor...");
-			accessor = localAccessor;
+			accessor = (TodoCRUDAccessor) localAccessor;
 		}
 
 		Log.i(logger, "will provide accessor: " + accessor);
 
-		return accessor;
+		return (LocalTodoCRUDAccessor) accessor;
 	}
 
-	public MediaResourceAccessor getMediaResourceAccessor() {
+	public MediaResourceAccessorImpl getMediaResourceAccessor() {
 		return this.mediaResourceAccessor;
 	}
 

@@ -36,13 +36,15 @@
 
         <!-- use a selector operating on the content! -->
 
-        <Spinner
+<!--        <Spinner
             android:id="@+id/item_iconname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/background_list"
             android:prompt="@string/background_prompt" />
+              -->
     </LinearLayout>
+
 
  	<Button
         android:id="@+id/clearButton"

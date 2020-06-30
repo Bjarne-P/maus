@@ -10,9 +10,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class URLDataItemCRUDAccessor extends LocalDataItemCRUDAccessor {
+public class URLTodoCRUDAccessor extends LocalTodoCRUDAccessor {
 
-	protected static String logger = URLDataItemCRUDAccessor.class
+	protected static String logger = URLTodoCRUDAccessor.class
 			.getSimpleName();
 
 	// the url from which we read the items
@@ -20,7 +20,7 @@ public class URLDataItemCRUDAccessor extends LocalDataItemCRUDAccessor {
 
 	private ObjectMapper mObjectMapper = new ObjectMapper();
 
-	public URLDataItemCRUDAccessor(String urlstring) {
+	public URLTodoCRUDAccessor(String urlstring) {
 		try {
 			this.url = new URL(urlstring);
 			Log.i(logger, "created url: " + url);
