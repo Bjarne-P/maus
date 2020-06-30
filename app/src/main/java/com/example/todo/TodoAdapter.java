@@ -43,7 +43,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
 
         //Bundle extras = EditAddTodoActivity.getIntent().getExtras();
 
-        c.set(current.getDue_year(), current.getDue_month(), current.getDue_day(), current.getDue_hour(), current.getDue_minute());
+        c.set(current.getDue_year(), current.getDue_month(), current.getDue_day(), current.getDue_hour(),
+                current.getDue_minute());
 
         String currentDateString = DateFormat.getDateInstance().format(c.getTime());
 
@@ -56,7 +57,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
        // holder.text_view_tile.setText(extras.getBoolean);
 
         holder.text_view_days.setText(currentDateString);
-        holder.text_view_time.setText(String.format("%02d", current.getDue_hour()) + ":" + String.format("%02d", current.getDue_minute()));
+        holder.text_view_time.setText(String.format("%02d", current.getDue_hour()) + ":" +
+                String.format("%02d", current.getDue_minute()));
 
         if (cTime < nowTime){
             holder.text_view_days.setTextColor(Color.RED);

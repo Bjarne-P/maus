@@ -1,4 +1,6 @@
-package de.thb.fbi.msr.maus.einkaufsliste.model;
+package com.example.todo.ROOM.accessors;
+
+import com.example.todo.ROOM.Todo;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ import javax.ws.rs.Produces;
 @Path("/dataitems")
 @Consumes({ "application/json" })
 @Produces({ "application/json" })
-public interface DataItemCRUDAccessor {
+public interface TodoCRUDAccessor {
 	
 	@GET
 	public List<Todo> readAllItems();

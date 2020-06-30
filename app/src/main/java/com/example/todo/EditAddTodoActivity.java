@@ -358,7 +358,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             setResult(RESULT_OK, intent);
             finish();
         }
-        
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

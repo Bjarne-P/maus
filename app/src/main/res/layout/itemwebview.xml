@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/item_name"
+            android:layout_width="fill_parent"
+            android:layout_height="50dip"
+            android:hint="@string/itemdetails_name"
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
+
+        <!--
+        the description will be kept empty as here we will add a web view. 
+        However the element needs to be present in order for subclassing to be convenient
+        -->
+        <EditText
+            android:id="@+id/item_description"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:gravity="left|top"
+            android:hint="@string/itemdetails_description"
+            android:imeOptions="actionDone"
+            android:padding="5dp"
+            android:textSize="12sp" />
+        
+        <!--  the web view -->
+        <WebView android:id="@+id/item_webview" android:layout_width="fill_parent" android:layout_height="175dp"/>
+
+        <!-- use a selector operating on the content! -->
+
+<!--        <Spinner
+            android:id="@+id/item_iconname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/background_list"
+            android:prompt="@string/background_prompt" />
+              -->
+    </LinearLayout>
+
+
+ 	<Button
+        android:id="@+id/clearButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/deleteButton"
+        android:height="30dip"
+        android:text="Text Löschen" />
+ 
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:height="30dip"
+        android:text="Speichern" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/saveButton"
+        android:height="30dip"
+        android:text="Löschen" />
+
+</RelativeLayout>
