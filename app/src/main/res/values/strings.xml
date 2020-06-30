@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">TODO</string>
+    <string-array name="main_menu">
+        <item>Local Accessor</item>
+        <item>Resteasy Client</item>
+        <item>Remote Web Content</item>
+        <item>Remote Web Content via Chrome</item>
+        <item>Simple URL</item>
+        <item>Apache HttpClient</item>
+        <item>HttpURLConnection</item>
+    </string-array>
+
+    <item name="localAccessor" type="integer">0</item>
+    <item name="urlClass" type="integer">1</item>
+    <item name="apacheHttpClient" type="integer">2</item>
+    <item name="urlConnection" type="integer">3</item>
+    <item name="resteasyFramework" type="integer">4</item>
 </resources>

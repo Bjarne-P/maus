@@ -5,13 +5,12 @@ import java.util.List;
 
 import de.thb.fbi.msr.maus.einkaufsliste.model.Todo;
 import org.apache.log4j.Logger;
-import de.thb.fbi.msr.maus.einkaufsliste.model.Todo;
-import de.thb.fbi.msr.maus.einkaufsliste.model.DataItemCRUDAccessor;
+import de.thb.fbi.msr.maus.einkaufsliste.model.TodoCRUDAccessor;
 
-public class RemoteDataItemAccessor implements DataItemCRUDAccessor {
+public class RemoteTodoAccessor implements TodoCRUDAccessor {
 
 	protected static Logger logger = Logger
-			.getLogger(RemoteDataItemAccessor.class);
+			.getLogger(RemoteTodoAccessor.class);
 
 	/**
 	 * the list of data items, note that the list is *static* as for each client

@@ -15,7 +15,7 @@ import javax.ws.rs.Produces;
 @Path("/dataitems")
 @Consumes({ "application/json" })
 @Produces({ "application/json" })
-public interface DataItemCRUDAccessor {
+public interface TodoCRUDAccessor {
 	
 	@GET
 	public List<Todo> readAllItems();
