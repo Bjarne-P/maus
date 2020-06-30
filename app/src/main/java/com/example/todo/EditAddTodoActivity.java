@@ -16,16 +16,16 @@ import android.view.View;
 import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.TypedArrayUtils;
 import androidx.fragment.app.DialogFragment;
 import com.example.todo.Widgets.DatePickerFragment;
 import com.example.todo.Widgets.TimePickerFragment;
 import com.example.todo.addressbook.AddressbookSelectActivity;
 import com.example.todo.addressbook.model.Contact;
+import com.example.todo.addressbook.model.ContactsAccessorImpl;
+import com.example.todo.addressbook.model.IContactsAccessor;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -48,9 +48,11 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public static final String EXTRA_MINUTE = "com.example.todo.extra_minute";
     public static final String EXTRA_DONE = "com.example.todo.extra_done";
     public static final String EXTRA_DELETE_FLAG = "com.example.todo.extra_flag";
+    public static final String EXTRA_CONTACTS = "com.example.todo.extra_contacts";
 
 
-    private static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 17;
+    private static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 18;
+    private static final int MY_PERMISSION_REQUEST_READ_CONTACTS_FOR_SELECTION = 17;
     private List<Contact> contactsList = new ArrayList<Contact>();
 
     private Button setTime;
@@ -65,6 +67,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     private ArrayAdapter<Contact> contactsListAdapter;
 
     private AlertDialog.Builder builder;
+    private ArrayList<Integer> oldContacts;
 
 
     @Override
@@ -78,17 +81,16 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         edit_content = findViewById(R.id.edit_Beschreibung);
         set_importaint = findViewById(R.id.set_important);
         set_done = findViewById(R.id.set_done);
-
-
         contactsListView = findViewById(R.id.embeddedContactsList);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Todo");
 
+        initContactsListAdapter();
+
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_ID)) {
-
             setTitle("Edit Todo");
             Bundle args = intent.getExtras();
             edit_name.setText(args.getString(EXTRA_TITLE));
@@ -106,8 +108,13 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
 
             Log.d("Zutun JAHR", String.valueOf(calendar.get(calendar.YEAR)));
 
-
             Toast.makeText(this, DateFormat.getDateInstance().format(calendar.getTime()), Toast.LENGTH_SHORT).show();
+
+            oldContacts = args.getIntegerArrayList(EXTRA_CONTACTS);
+            if (oldContacts.isEmpty())
+                Toast.makeText(this, "No Contacts found", Toast.LENGTH_SHORT).show();
+            else
+                requestContactReadPermission(MY_PERMISSION_REQUEST_READ_CONTACTS);
         } else {
             setTitle("Add Todo");
             set_done.setVisibility(View.GONE);
@@ -143,11 +150,28 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         add_Contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestContactReadPermission();
+                requestContactReadPermission(MY_PERMISSION_REQUEST_READ_CONTACTS_FOR_SELECTION);
             }
         });
 
-        //contactsList.add(new Contact());
+
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        builder = new AlertDialog.Builder(this);
+
+        // set the adapter on the list view
+        contactsListView.setAdapter(contactsListAdapter);
+
+        // set a listener that clicks on an item from the list
+        contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View itemView, int itemPosition, long itemId) {
+                Log.i(logger, "onItemClick: position is: " + itemPosition + ", id is: " + itemId);
+                onContactInPopupClicked(itemPosition, (int) itemId);
+            }
+        });
+    }
+
+    private void initContactsListAdapter() {
         contactsListAdapter = new ArrayAdapter<Contact>(this, R.layout.addressbookitem_in_listview, contactsList) {
             @Override
             public View getView(final int position, View view, ViewGroup parent) {
@@ -170,21 +194,6 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 return listItemView;
             }
         };
-
-        // 1. Instantiate an AlertDialog.Builder with its constructor
-        builder = new AlertDialog.Builder(this);
-
-        // set the adapter on the list view
-        contactsListView.setAdapter(contactsListAdapter);
-
-        // set a listener that clicks on an item from the list
-        contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View itemView, int itemPosition, long itemId) {
-                Log.i(logger, "onItemClick: position is: " + itemPosition + ", id is: " + itemId);
-                onContactInPopupClicked(itemPosition, (int) itemId);
-            }
-        });
     }
 
     private void onContactInPopupClicked(int itemPosition, int addressId) {
@@ -226,35 +235,60 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         }
 
 
-    private void requestContactReadPermission() {
+    private void requestContactReadPermission(int requestCode) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSION_REQUEST_READ_CONTACTS);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, requestCode);
             // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an app-defined int constant ("request-code"). The callback method gets the result of the request.
         } else {
             // already granted, or old runtime without individual permissions
             //initContacts();
-            Intent intent = new Intent(this, AddressbookSelectActivity.class);
-            startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
+            if (requestCode == MY_PERMISSION_REQUEST_READ_CONTACTS_FOR_SELECTION) {
+                Intent intent = new Intent(this, AddressbookSelectActivity.class);
+                startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
+            } else if (requestCode == MY_PERMISSION_REQUEST_READ_CONTACTS)
+                reconstructOldContacts();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSION_REQUEST_READ_CONTACTS: {
+            case MY_PERMISSION_REQUEST_READ_CONTACTS_FOR_SELECTION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // proceed as required by app logic
-                    Intent intent = new Intent(this, AddressbookSelectActivity.class);
-                    startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
+                    if (getTitle() == "Add Todo") {
+                        Intent intent = new Intent(this, AddressbookSelectActivity.class);
+                        startActivityForResult(intent, AddressbookSelectActivity.SELECT_CONTACT);
+                    }
                 } else {
                     // do something reasonable if permissions are denied
-                    Toast toast = Toast.makeText(getApplicationContext(), "Permission not granted", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Contact access not granted", Toast.LENGTH_SHORT);
                     toast.show();
                 }
+                break;
+            }
+            case MY_PERMISSION_REQUEST_READ_CONTACTS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    reconstructOldContacts();
+                } else {
+                    // do something reasonable if permissions are denied
+                    Toast toast = Toast.makeText(getApplicationContext(), "Contact access not granted", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                break;
             }
         }
     }
 
+    private void reconstructOldContacts() {
+        IContactsAccessor accessor = new ContactsAccessorImpl(this.getContentResolver());
+        List<Contact> allContacts = accessor.readAllContacts();
+
+        for (Integer id : oldContacts)
+            for (Contact c : allContacts)
+                if (c.getId() == id)
+                    contactsListAdapter.add(c);
+    }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -294,29 +328,34 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             boolean importaint = set_importaint.isChecked();
             boolean done = set_done.isChecked();
 
+            ArrayList<Integer> contacts = new ArrayList<>();
+            for (Contact c : contactsList)
+                contacts.add((int) c.getId());
+
             if (title.trim().isEmpty() || content.trim().isEmpty()) {
                 Toast.makeText(this, "Please add Title and Content", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            Intent i = new Intent();
-            i.putExtra(EXTRA_TITLE, title);
-            i.putExtra(EXTRA_CONTENT, content);
-            i.putExtra(EXTRA_IMPORTAINT, importaint);
-            i.putExtra(EXTRA_YEAR, calendar.get(Calendar.YEAR));
-            i.putExtra(EXTRA_MONTH, calendar.get(Calendar.MONTH));
-            i.putExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
-            i.putExtra(EXTRA_HOUR, calendar.get(Calendar.HOUR));
-            i.putExtra(EXTRA_MINUTE, calendar.get(Calendar.MINUTE));
-            i.putExtra(EXTRA_DONE, done);
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_TITLE, title);
+            intent.putExtra(EXTRA_CONTENT, content);
+            intent.putExtra(EXTRA_IMPORTAINT, importaint);
+            intent.putExtra(EXTRA_YEAR, calendar.get(Calendar.YEAR));
+            intent.putExtra(EXTRA_MONTH, calendar.get(Calendar.MONTH));
+            intent.putExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
+            intent.putExtra(EXTRA_HOUR, calendar.get(Calendar.HOUR));
+            intent.putExtra(EXTRA_MINUTE, calendar.get(Calendar.MINUTE));
+            intent.putExtra(EXTRA_CONTACTS, contacts);
+            intent.putExtra(EXTRA_DONE, done);
             if (flag)
-                i.putExtra(EXTRA_DELETE_FLAG, true);
+                intent.putExtra(EXTRA_DELETE_FLAG, true);
 
             int id = getIntent().getIntExtra(EXTRA_ID, -1);
             if (id != -1) {
-                i.putExtra(EXTRA_ID, id);
+                intent.putExtra(EXTRA_ID, id);
             }
-            setResult(RESULT_OK, i);
+            setResult(RESULT_OK, intent);
             finish();
         }
         

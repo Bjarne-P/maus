@@ -22,6 +22,7 @@ import com.example.todo.sort.CompareRecent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -131,6 +132,7 @@ public class TodoListActivity extends AppCompatActivity {
             intent.putExtra(EditAddTodoActivity.EXTRA_HOUR, todo.getDue_hour());
             intent.putExtra(EditAddTodoActivity.EXTRA_MINUTE, todo.getDue_day());
             Log.d("ZUTUN TRANSFERIERT", String.valueOf(todo.getDue_year()));
+            intent.putExtra(EditAddTodoActivity.EXTRA_CONTACTS, todo.getContactsAsAL());
             startActivityForResult(intent, edit_todo_request);
         });
 
@@ -170,8 +172,10 @@ public class TodoListActivity extends AppCompatActivity {
             int day = bundle.getInt(EditAddTodoActivity.EXTRA_DAY, 1);
             int hour = bundle.getInt(EditAddTodoActivity.EXTRA_HOUR, 12);
             int minute = bundle.getInt(EditAddTodoActivity.EXTRA_MINUTE, 0);
+            ArrayList<Integer> contacts = bundle.getIntegerArrayList(EditAddTodoActivity.EXTRA_CONTACTS);
 
-            Todo todo = new Todo(title, content, importaint, done, minute, hour, day, month, year);
+            Todo todo = new Todo(title, content, importaint, done, minute, hour, day, month, year, null);
+            todo.setContacts(contacts);
             todoViewmodel.insert(todo);
 
             Toast.makeText(this, "Todo saved", Toast.LENGTH_LONG).show();
@@ -182,6 +186,7 @@ public class TodoListActivity extends AppCompatActivity {
                 Toast.makeText(this, "Couldn't update", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             Bundle bundle = data.getExtras();
             String title = data.getStringExtra(EditAddTodoActivity.EXTRA_TITLE);
             String content = data.getStringExtra(EditAddTodoActivity.EXTRA_CONTENT);
@@ -191,10 +196,12 @@ public class TodoListActivity extends AppCompatActivity {
             int day = bundle.getInt(EditAddTodoActivity.EXTRA_DAY, 1);
             int hour = bundle.getInt(EditAddTodoActivity.EXTRA_HOUR, 12);
             int minute = bundle.getInt(EditAddTodoActivity.EXTRA_MINUTE, 0);
+            ArrayList<Integer> contacts = bundle.getIntegerArrayList(EditAddTodoActivity.EXTRA_CONTACTS);
             boolean done = bundle.getBoolean(EditAddTodoActivity.EXTRA_DONE);
             boolean del = bundle.getBoolean(EditAddTodoActivity.EXTRA_DELETE_FLAG);
 
-            Todo todo = new Todo(title, content, importaint, done, minute, hour, day, month, year);
+            Todo todo = new Todo(title, content, importaint, done, minute, hour, day, month, year, null);
+            todo.setContacts(contacts);
             todo.setId(id);
             if (del) {
                 delete(todo);
