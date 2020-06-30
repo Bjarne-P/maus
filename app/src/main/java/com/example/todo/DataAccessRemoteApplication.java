@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
-import com.example.todo.ROOM.TodoDAO;
 import com.example.todo.ROOM.accessors.*;
-import de.thb.fbi.msr.maus.einkaufsliste.model.DataItemCRUDAccessor;
-import de.thb.fbi.msr.maus.einkaufsliste.model.MediaResourceAccessor;
-import de.thb.fbi.msr.maus.einkaufsliste.model.accessors.*;
+
 
 /**
  * a local application class providing centralised functionality, in particular
@@ -25,7 +22,7 @@ public class DataAccessRemoteApplication extends Application {
 	 * the accessors that implement the different alternatives for accessing the
 	 * item list
 	 */
-	private TodoDAO localAccessor;
+	private LocalDataItemCRUDAccessor localAccessor;
 
 	private ResteasyDataItemCRUDAccessor resteasyAccessor;
 
@@ -61,8 +58,8 @@ public class DataAccessRemoteApplication extends Application {
 		Log.i(logger, "<constructor>(): created accessors.");
 	}
 
-	public TodoDAO getLocalAccessor(int accessorId) {
-		TodoDAO accessor;
+	public LocalDataItemCRUDAccessor getLocalAccessor(int accessorId) {
+		LocalDataItemCRUDAccessor accessor;
 
 		switch (accessorId) {
 		case R.integer.localAccessor:

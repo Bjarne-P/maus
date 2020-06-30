@@ -1,8 +1,7 @@
 package com.example.todo.ROOM.accessors;
 
 import android.util.Log;
-import de.thb.fbi.msr.maus.einkaufsliste.model.DataItem;
-import de.thb.fbi.msr.maus.einkaufsliste.model.DataItemCRUDAccessor;
+import com.example.todo.ROOM.Todo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -11,7 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class URLDataItemCRUDAccessor implements DataItemCRUDAccessor {
+public class URLDataItemCRUDAccessor extends LocalDataItemCRUDAccessor {
 
 	protected static String logger = URLDataItemCRUDAccessor.class
 			.getSimpleName();
@@ -32,33 +31,33 @@ public class URLDataItemCRUDAccessor implements DataItemCRUDAccessor {
 	}
 
 	@Override
-	public List<DataItem> readAllItems() {
+	public List<Todo> readAllItems() {
 		try {
 			// access the url
 			InputStream is = this.url.openStream();
-			return mObjectMapper.readValue(is, new TypeReference<List<DataItem>>() {});
+			return mObjectMapper.readValue(is, new TypeReference<List<Todo>>() {});
 		} catch (Exception e) {
 			Log.e(logger, "readAllItems(): got exception: " + e, e);
-			return new ArrayList<DataItem>();
+			return new ArrayList<Todo>();
 		}
 	}
 
 	@Override
-	public DataItem createItem(DataItem item) {
+	public Todo createItem(Todo item) {
 		Log.e(logger, "createItem(): cannot execute action...");
 
 		return null;
 	}
 
 	@Override
-	public boolean deleteItem(long itemId) {
+	public boolean deleteItem(int itemId) {
 		Log.e(logger, "deleteItem(): cannot execute action...");
 
 		return false;
 	}
 
 	@Override
-	public DataItem updateItem(DataItem item) {
+	public Todo updateItem(Todo item) {
 		Log.e(logger, "updateItem(): cannot execute action...");
 
 		return null;

@@ -1,8 +1,7 @@
 package com.example.todo.ROOM.accessors;
 
 import android.util.Log;
-import de.thb.fbi.msr.maus.einkaufsliste.model.DataItem;
-import de.thb.fbi.msr.maus.einkaufsliste.model.DataItemCRUDAccessor;
+import com.example.todo.ROOM.Todo;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 
@@ -30,10 +29,10 @@ public class ResteasyDataItemCRUDAccessor implements DataItemCRUDAccessor {
 	}
 
 	@Override
-	public List<DataItem> readAllItems() {
+	public List<Todo> readAllItems() {
 		Log.i(logger, "readAllItems()");
 
-		List<DataItem> itemlist = restClient.readAllItems();
+		List<Todo> itemlist = restClient.readAllItems();
 		
 		Log.i(logger, "readAllItems(): got: " + itemlist);
 	
@@ -41,7 +40,7 @@ public class ResteasyDataItemCRUDAccessor implements DataItemCRUDAccessor {
 	}
 
 	@Override
-	public DataItem createItem(DataItem item) {
+	public Todo createItem(Todo item) {
 		Log.i(logger, "createItem(): send: " + item);
 
 		item = restClient.createItem(item);
@@ -52,7 +51,7 @@ public class ResteasyDataItemCRUDAccessor implements DataItemCRUDAccessor {
 	}
 
 	@Override
-	public boolean deleteItem(long itemId) {
+	public boolean deleteItem(int itemId) {
 		Log.i(logger, "deleteItem(): send: " + itemId);
 
 		boolean deleted = restClient.deleteItem(itemId);
@@ -63,7 +62,7 @@ public class ResteasyDataItemCRUDAccessor implements DataItemCRUDAccessor {
 	}
 
 	@Override
-	public DataItem updateItem(DataItem item) {
+	public Todo updateItem(Todo item) {
 		Log.i(logger, "updateItem(): send: " + item);
 
 		item = restClient.updateItem(item);

@@ -1,13 +1,13 @@
 package com.example.todo.ROOM.accessors;
 
 import android.util.Log;
-import de.thb.fbi.msr.maus.einkaufsliste.model.MediaResourceAccessor;
+
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class MediaResourceAccessorImpl implements MediaResourceAccessor {
+public class MediaResourceAccessorImpl {
 
 	protected static String logger = MediaResourceAccessorImpl.class
 			.getSimpleName();
@@ -22,7 +22,6 @@ public class MediaResourceAccessorImpl implements MediaResourceAccessor {
 		}
 	}
 
-	@Override
 	public InputStream readMediaResource(String url) throws IOException {
 		Log.i(logger, "readMediaResource(): " + url);
 
@@ -41,7 +40,7 @@ public class MediaResourceAccessorImpl implements MediaResourceAccessor {
 	 * get the base url for the media resources
 	 * @return
 	 */
-	@Override
+
 	public String getBaseUrl() {
 		return this.baseUrl;
 	}

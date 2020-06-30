@@ -46,7 +46,54 @@ public class Todo {
 
     }
 
+    public Todo() {
 
+    }
+
+    public Todo updateFrom(Todo item) {
+            this.setTitle(item.getTitle());
+            this.setContent(item.getContent());
+            this.setImportaint(item.isImportaint());
+            this.setDue_minute(item.getDue_minute());
+            this.setDue_hour(item.getDue_hour());
+            this.setDue_day(item.getDue_day());
+            this.setDue_month(item.getDue_month());
+            this.setDue_year(item.getDue_year());
+        return this;
+    }
+
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public void setDue_minute(int due_minute) {
+        this.due_minute = due_minute;
+    }
+
+    public void setDue_hour(int due_hour) {
+        this.due_hour = due_hour;
+    }
+
+    public void setDue_day(int due_day) {
+        this.due_day = due_day;
+    }
+
+    public void setDue_month(int due_month) {
+        this.due_month = due_month;
+    }
+
+    public void setDue_year(int due_year) {
+        this.due_year = due_year;
+    }
 
     public void setId(int id) {
         this.id = id;
