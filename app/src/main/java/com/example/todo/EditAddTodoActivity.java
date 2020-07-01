@@ -111,9 +111,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             Toast.makeText(this, DateFormat.getDateInstance().format(calendar.getTime()), Toast.LENGTH_SHORT).show();
 
             oldContacts = args.getIntegerArrayList(EXTRA_CONTACTS);
-            if (oldContacts.isEmpty())
-                Toast.makeText(this, "No Contacts found", Toast.LENGTH_SHORT).show();
-            else
+            if (!oldContacts.isEmpty())
                 requestContactReadPermission(MY_PERMISSION_REQUEST_READ_CONTACTS);
         } else {
             setTitle("Add Todo");
@@ -312,9 +310,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         @Override
         protected void onActivityResult ( int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            Bundle bundle = data.getExtras();
 
             if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
+                Bundle bundle = data.getExtras();
                 Contact c = (Contact) bundle.get(AddressbookSelectActivity.RESPONSE_ENTRY);
                 if (!contactsList.contains(c)) {
                     contactsListAdapter.add(c);
