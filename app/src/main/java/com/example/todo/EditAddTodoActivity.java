@@ -195,46 +195,46 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     }
 
     private void onContactInPopupClicked(int itemPosition, int addressId) {
-            Contact c = contactsList.get(itemPosition);
-            // Concatenate mail addresses and phone numbers. Stream requires min SDK 24.
-            String[] addresses = Stream.concat(Arrays.stream(c.getEmails().toArray()), Arrays.stream(c.getPhoneNumbers().toArray())).toArray(String[]::new);
-            final int[] selected = {0}; // Needs to be an array because it is changed from another class.
+        Contact c = contactsList.get(itemPosition);
+        // Concatenate mail addresses and phone numbers. Stream requires min SDK 24.
+        String[] addresses = Stream.concat(Arrays.stream(c.getEmails().toArray()), Arrays.stream(c.getPhoneNumbers().toArray())).toArray(String[]::new);
+        final int[] selected = {0}; // Needs to be an array because it is changed from another class.
 
-            builder.setTitle(c.getName());
+        builder.setTitle(c.getName());
 
-            builder.setSingleChoiceItems(addresses, 0, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    Log.i(logger, "DialogInterface.OnClick: which: " + which);
-                    // The 'which' argument contains the index position
-                    // of the selected item
-                    selected[0] = which;
+        builder.setSingleChoiceItems(addresses, 0, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i(logger, "DialogInterface.OnClick: which: " + which);
+                // The 'which' argument contains the index position
+                // of the selected item
+                selected[0] = which;
+            }
+        });
+
+        builder.setPositiveButton("Contact", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked Contact button
+                String address = addresses[selected[0]];
+                if (address.contains("@"))
+                    sendMail(address);
+                else {
+                    phoneNumberForSMS = address;
+                    sendSMS();
                 }
-            });
+            }
+        });
+        builder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked Remove button
+                contactsListAdapter.remove(c);
+            }
+        });
 
-            builder.setPositiveButton("Contact", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked Contact button
-                    String address = addresses[selected[0]];
-                    if (address.contains("@"))
-                        sendMail(address);
-                    else {
-                        phoneNumberForSMS = address;
-                        sendSMS();
-                    }
-                }
-            });
-            builder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked Remove button
-                    contactsListAdapter.remove(c);
-                }
-            });
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
 
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-
-            dialog.show();
-        }
+        dialog.show();
+    }
 
 
     private void requestContactReadPermission(int requestCode) {
