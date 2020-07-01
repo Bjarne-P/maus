@@ -7,19 +7,43 @@ targetCompatibility = 1.8
 
 repositories {
 
-   // maven { url "http://repo.maven.apache.org/maven2" }
+    //maven { url "http://repo.maven.apache.org/maven2" }
     mavenCentral()
     mavenLocal()
 }
 
+buildscript {
+    repositories {
+        google()
+        jcenter()
+
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+
+    }
+}
+
 dependencies {
-    providedCompile group: 'javax', name: 'javaee-api', version:'7.0'
+    providedCompile group: 'javax', name: 'javaee-api', version: '7.0'
     def lifecycle_version = "2.2.0"
     def room_version = "2.2.5"
 
+
     //room components
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // For Kotlin use kapt instead of annotationProcessor
 
     // h
     // ttps://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind

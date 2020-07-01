@@ -12,8 +12,13 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
+import org.w3c.dom.Text;
 
 public class LoginActivity extends AppCompatActivity {
+
+    boolean emailFlag;
+    boolean passwordFlag;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +50,58 @@ public class LoginActivity extends AppCompatActivity {
         l.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(editPassword.length() < 6){
-                    editPassword.setError("Your Password must be 6 digits long!");
-                }
-                else if (!Patterns.EMAIL_ADDRESS.matcher(editEmail.getText().toString()).matches()) {
+                if (!Patterns.EMAIL_ADDRESS.matcher(editEmail.getText().toString()).matches()) {
                     editEmail.setError("Please Enter a valid email address");
+                } else if (editPassword.length() < 6) {
+                    editPassword.setError("Your Password must be 6 digits long!");
+
                 } else startActivity(new Intent(LoginActivity.this, TodoListActivity.class));
+            }
+        });
+
+        editEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editEmail != null)
+                    emailFlag = true;
+                else emailFlag = false;
+
+                if (passwordFlag && emailFlag)
+                    l.setEnabled(true);
+                else l.setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        editPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editPassword != null)
+                    passwordFlag = true;
+                else passwordFlag = false;
+
+                if (passwordFlag && emailFlag)
+                    l.setEnabled(true);
+                else l.setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }

@@ -36,6 +36,7 @@ public class Todo implements Serializable {
 		this.due_day = due_day;
 		this.due_month = due_month;
 		this.due_year = due_year;
+		this.done = false;
 	}
 
 

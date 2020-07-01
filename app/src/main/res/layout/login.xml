@@ -23,9 +23,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/BtnLogin"
             android:text="Login"
+            android:enabled="false"
             android:layout_margin="15dp"
             android:layout_gravity="center"
-            android:background="@color/colorAccent"
-            android:enabled="false"/>
+            android:background="@color/colorAccent"/>
 
 </LinearLayout>
