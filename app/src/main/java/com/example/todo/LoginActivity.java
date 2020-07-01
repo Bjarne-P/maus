@@ -19,10 +19,28 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        final Button l = findViewById(R.id.BtnLogin);
-        final EditText editPassword = findViewById(R.id.editPassword);
         final EditText editEmail = findViewById(R.id.editEmail);
+        final EditText editPassword = findViewById(R.id.editPassword);
+        final Button l = findViewById(R.id.BtnLogin);
 
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!editEmail.getText().toString().equals("") && !editPassword.getText().toString().equals(""))
+                    l.setEnabled(true);
+                else
+                    l.setEnabled(false);
+            }
+        };
+
+        editEmail.addTextChangedListener(textWatcher);
+        editPassword.addTextChangedListener(textWatcher);
 
         l.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,5 +54,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 }
