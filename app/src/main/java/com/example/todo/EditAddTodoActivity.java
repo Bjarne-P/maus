@@ -215,8 +215,13 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             builder.setPositiveButton("Contact", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User clicked Contact button
-                    String msg = "Contacting " + c.getName() + " through " + addresses[selected[0]];
+                    String address = addresses[selected[0]];
+                    String msg = "Contacting " + c.getName() + " through " + address;
                     Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+                    if (address.contains("@"))
+                        sendMail(address);
+                    //else
+
                 }
             });
             builder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
@@ -319,6 +324,15 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 }
             }
         }
+
+    private void sendMail(String address) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {address});
+        intent.putExtra(Intent.EXTRA_SUBJECT, edit_name.getText().toString());
+        intent.putExtra(Intent.EXTRA_TEXT, edit_content.getText().toString());
+        intent.setType("message/rfc822");
+        startActivity(Intent.createChooser(intent, "Wählen Sie einen Emailclient"));
+    }
 
         private void saveTodo(boolean flag) {
             String title = edit_name.getText().toString();
