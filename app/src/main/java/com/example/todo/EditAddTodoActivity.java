@@ -1,13 +1,12 @@
 package com.example.todo;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,10 +49,9 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     public static final String EXTRA_DELETE_FLAG = "com.example.todo.extra_flag";
     public static final String EXTRA_CONTACTS = "com.example.todo.extra_contacts";
 
-
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     private static final int MY_PERMISSION_REQUEST_READ_CONTACTS = 18;
     private static final int MY_PERMISSION_REQUEST_READ_CONTACTS_FOR_SELECTION = 17;
-    private List<Contact> contactsList = new ArrayList<Contact>();
 
     private Button setTime;
     private Button setDate;
@@ -66,8 +64,10 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     private ListView contactsListView;
     private ArrayAdapter<Contact> contactsListAdapter;
 
+    private List<Contact> contactsList = new ArrayList<Contact>();
     private AlertDialog.Builder builder;
     private ArrayList<Integer> oldContacts;
+    private String phoneNumberForSMS;
 
 
     @Override
@@ -200,7 +200,6 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
             String[] addresses = Stream.concat(Arrays.stream(c.getEmails().toArray()), Arrays.stream(c.getPhoneNumbers().toArray())).toArray(String[]::new);
             final int[] selected = {0}; // Needs to be an array because it is changed from another class.
 
-            // 2. Chain together various setter methods to set the dialog characteristics
             builder.setTitle(c.getName());
 
             builder.setSingleChoiceItems(addresses, 0, new DialogInterface.OnClickListener() {
@@ -216,12 +215,12 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 public void onClick(DialogInterface dialog, int id) {
                     // User clicked Contact button
                     String address = addresses[selected[0]];
-                    String msg = "Contacting " + c.getName() + " through " + address;
-                    Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
                     if (address.contains("@"))
                         sendMail(address);
-                    //else
-
+                    else {
+                        phoneNumberForSMS = address;
+                        sendSMS();
+                    }
                 }
             });
             builder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
@@ -280,6 +279,16 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
                 }
                 break;
             }
+            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendSMS();
+                } else {
+                    // do something reasonable if permissions are denied
+                    Toast toast = Toast.makeText(getApplicationContext(), "Send SMS permission not granted", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                break;
+            }
         }
     }
 
@@ -312,18 +321,18 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         setDate.setText(DateFormat.getDateInstance().format(calendar.getTime()));
     }
 
-        @Override
-        protected void onActivityResult ( int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
+    @Override
+    protected void onActivityResult ( int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-            if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
-                Bundle bundle = data.getExtras();
-                Contact c = (Contact) bundle.get(AddressbookSelectActivity.RESPONSE_ENTRY);
-                if (!contactsList.contains(c)) {
-                    contactsListAdapter.add(c);
-                }
+        if ((requestCode == CONTACT_SELECTED) && (resultCode == RESULT_OK)) {
+            Bundle bundle = data.getExtras();
+            Contact c = (Contact) bundle.get(AddressbookSelectActivity.RESPONSE_ENTRY);
+            if (!contactsList.contains(c)) {
+                contactsListAdapter.add(c);
             }
         }
+    }
 
     private void sendMail(String address) {
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -334,42 +343,60 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         startActivity(Intent.createChooser(intent, "Wählen Sie einen Emailclient"));
     }
 
-        private void saveTodo(boolean flag) {
-            String title = edit_name.getText().toString();
-            String content = edit_content.getText().toString();
-            boolean importaint = set_importaint.isChecked();
-            boolean done = set_done.isChecked();
-
-            ArrayList<Integer> contacts = new ArrayList<>();
-            for (Contact c : contactsList)
-                contacts.add((int) c.getId());
-
-            if (title.trim().isEmpty() || content.trim().isEmpty()) {
-                Toast.makeText(this, "Please add Title and Content", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_TITLE, title);
-            intent.putExtra(EXTRA_CONTENT, content);
-            intent.putExtra(EXTRA_IMPORTAINT, importaint);
-            intent.putExtra(EXTRA_YEAR, calendar.get(Calendar.YEAR));
-            intent.putExtra(EXTRA_MONTH, calendar.get(Calendar.MONTH));
-            intent.putExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
-            intent.putExtra(EXTRA_HOUR, calendar.get(Calendar.HOUR));
-            intent.putExtra(EXTRA_MINUTE, calendar.get(Calendar.MINUTE));
-            intent.putExtra(EXTRA_CONTACTS, contacts);
-            intent.putExtra(EXTRA_DONE, done);
-            if (flag)
-                intent.putExtra(EXTRA_DELETE_FLAG, true);
-
-            int id = getIntent().getIntExtra(EXTRA_ID, -1);
-            if (id != -1) {
-                intent.putExtra(EXTRA_ID, id);
-            }
-            setResult(RESULT_OK, intent);
-            finish();
+    //---sends an SMS message to another device---
+    private void sendSMS()
+    {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+        } else {
+            String msg = edit_content.getText().toString();
+            String scAddress = null;
+            // Set pending intents to broadcast
+            // when message sent and when delivered, or set to null.
+            PendingIntent sentIntent = null, deliveryIntent = null;
+            // Use SmsManager.
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumberForSMS, scAddress, msg, sentIntent, deliveryIntent);
         }
+    }
+
+
+    private void saveTodo(boolean flag) {
+        String title = edit_name.getText().toString();
+        String content = edit_content.getText().toString();
+        boolean importaint = set_importaint.isChecked();
+        boolean done = set_done.isChecked();
+
+        ArrayList<Integer> contacts = new ArrayList<>();
+        for (Contact c : contactsList)
+            contacts.add((int) c.getId());
+
+        if (title.trim().isEmpty() || content.trim().isEmpty()) {
+            Toast.makeText(this, "Please add Title and Content", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_TITLE, title);
+        intent.putExtra(EXTRA_CONTENT, content);
+        intent.putExtra(EXTRA_IMPORTAINT, importaint);
+        intent.putExtra(EXTRA_YEAR, calendar.get(Calendar.YEAR));
+        intent.putExtra(EXTRA_MONTH, calendar.get(Calendar.MONTH));
+        intent.putExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
+        intent.putExtra(EXTRA_HOUR, calendar.get(Calendar.HOUR));
+        intent.putExtra(EXTRA_MINUTE, calendar.get(Calendar.MINUTE));
+        intent.putExtra(EXTRA_CONTACTS, contacts);
+        intent.putExtra(EXTRA_DONE, done);
+        if (flag)
+            intent.putExtra(EXTRA_DELETE_FLAG, true);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1) {
+            intent.putExtra(EXTRA_ID, id);
+        }
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
 
     @Override
