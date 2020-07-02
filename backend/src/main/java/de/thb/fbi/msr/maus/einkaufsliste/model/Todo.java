@@ -2,6 +2,7 @@ package de.thb.fbi.msr.maus.einkaufsliste.model;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Todo implements Serializable {
 
@@ -25,9 +26,10 @@ public class Todo implements Serializable {
 
 	private int due_year;
 
+	private String contacts;
 
 
-	public Todo(String title, String content, boolean importaint, boolean done, int due_minute, int due_hour, int due_day, int due_month, int due_year) {
+	public Todo(String title, String content, boolean importaint, boolean done, int due_minute, int due_hour, int due_day, int due_month, int due_year, String contacts) {
 		this.title = title;
 		this.content = content;
 		this.importaint = importaint;
@@ -36,20 +38,43 @@ public class Todo implements Serializable {
 		this.due_day = due_day;
 		this.due_month = due_month;
 		this.due_year = due_year;
+		this.done = done;
+		this.setContacts(contacts);
 	}
 
+
+	public Todo(Todo todo){
+		this.id = todo.id;
+		this.title = todo.title;
+		this.content = todo.content;
+		this.importaint = todo.importaint;
+		this.due_minute = todo.due_minute;
+		this.due_hour = todo.due_hour;
+		this.due_day = todo.due_day;
+		this.due_month = todo.due_month;
+		this.due_year = todo.due_year;
+		this.done = todo.done;
+		this.setContacts(todo.contacts);
+	}
 
 	public Todo() {
 
 	}
 
 
+	public void setContacts(String contacts) { this.contacts = contacts; }
+
+
+	public String getContacts() { return contacts; }
+
 	public boolean isDone() {
 		return done;
 	}
+
 	public void setDone(boolean done) {
 		this.done = done;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}

@@ -9,16 +9,22 @@ import java.util.List;
 public interface TodoDAO {
 
     @Insert
-    void insert(Todo note);
+    void insert(Todo todo);
 
     @Update
-    void update(Todo note);
+    void update(Todo todo);
 
     @Delete
-    void delete(Todo note);
+    void delete(Todo todo);
 
     @Query("DELETE FROM todo_table")
     void deleteAll();
+
+    @Query("SELECT * FROM todo_table ORDER BY done DESC")
+    List<Todo> getAllTodosStatic();
+
+    @Query("Select Count(*) from todo_table")
+    LiveData<Integer> getItemCount();
 
     @Query("SELECT * FROM todo_table ORDER BY done DESC")
     LiveData<List<Todo>> getAllTodosDone();

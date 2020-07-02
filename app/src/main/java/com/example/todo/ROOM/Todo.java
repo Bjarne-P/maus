@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
@@ -23,8 +24,10 @@ public class Todo {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @SerializedName("title")
     private String title;
 
+    @SerializedName("content")
     private String content;
 
     private boolean done;
@@ -43,7 +46,22 @@ public class Todo {
 
     private String contacts;
 
-
+    @Override
+    public String toString() {
+        return "Todo{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", done=" + done +
+                ", importaint=" + importaint +
+                ", due_minute=" + due_minute +
+                ", due_hour=" + due_hour +
+                ", due_day=" + due_day +
+                ", due_month=" + due_month +
+                ", due_year=" + due_year +
+                ", contacts='" + contacts + '\'' +
+                '}';
+    }
 
     public Todo(String title, String content, boolean importaint, boolean done, int due_minute, int due_hour, int due_day, int due_month, int due_year, String contacts) {
         this.title = title;

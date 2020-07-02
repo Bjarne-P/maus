@@ -17,10 +17,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.ROOM.Todo;
+import com.example.todo.ROOM.TodoRepository;
+import com.example.todo.ROOM.accessors.TodoRetrofit;
 import com.example.todo.sort.ComparatorDueDate;
 import com.example.todo.sort.CompareRecent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.w3c.dom.Text;
+import retrofit2.Retrofit;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,10 +32,12 @@ import java.util.List;
 
 
 public class TodoListActivity extends AppCompatActivity {
-    public boolean Timeflag = false;
+    public boolean timeFlag = false;
+
 
     public final static int add_todo_request = 1;
     public final static int edit_todo_request = 2;
+
 
     private TodoViewmodel todoViewmodel;
 
@@ -40,7 +45,9 @@ public class TodoListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
 
+
         setTitle("Todolist by Bjarne Peuker & Felix Kainz");
+
 
         FloatingActionButton btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +85,7 @@ public class TodoListActivity extends AppCompatActivity {
             }
         });
 */
+
 
         Collections.sort(adapter.getTodos(), new ComparatorDueDate());
         adapter.sortByDue();
@@ -122,6 +130,8 @@ public class TodoListActivity extends AppCompatActivity {
                 else todo.setImportaint(true);
 
                 todoViewmodel.update(adapter.getTodoAt(viewHolder.getAdapterPosition()));
+
+                adapter.notifyDataSetChanged();
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -141,6 +151,11 @@ public class TodoListActivity extends AppCompatActivity {
             intent.putExtra(EditAddTodoActivity.EXTRA_CONTACTS, todo.getContactsAsAL());
             startActivityForResult(intent, edit_todo_request);
         });
+
+
+
+
+
 
 
         //nachher neu machen
@@ -163,6 +178,9 @@ public class TodoListActivity extends AppCompatActivity {
         });*/
 
     }
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -221,7 +239,7 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
 
-    public void delete(Todo todo){
+    public void delete(Todo todo) {
         new AlertDialog.Builder(this)
                 .setTitle("Confirmation")
                 .setMessage("Do you really want to delete this Todo")
@@ -242,7 +260,6 @@ public class TodoListActivity extends AppCompatActivity {
         a.inflate(R.menu.delete_all, menu);
         return true;
     }
-
 
 
     @Override

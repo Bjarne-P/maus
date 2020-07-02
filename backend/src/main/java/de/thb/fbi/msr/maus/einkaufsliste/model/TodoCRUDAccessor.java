@@ -12,7 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 
-@Path("/dataitems")
+@Path("/todos")
 @Consumes({ "application/json" })
 @Produces({ "application/json" })
 public interface TodoCRUDAccessor {
