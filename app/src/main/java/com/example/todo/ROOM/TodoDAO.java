@@ -21,6 +21,12 @@ public interface TodoDAO {
     void deleteAll();
 
     @Query("SELECT * FROM todo_table ORDER BY done DESC")
+    List<Todo> getAllTodosStatic();
+
+    @Query("Select Count(*) from todo_table")
+    LiveData<Integer> getItemCount();
+
+    @Query("SELECT * FROM todo_table ORDER BY done DESC")
     LiveData<List<Todo>> getAllTodosDone();
 
 
