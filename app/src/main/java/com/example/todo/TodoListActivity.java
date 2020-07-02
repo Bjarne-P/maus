@@ -96,7 +96,13 @@ public class TodoListActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                todoViewmodel.delete(adapter.getTodoAt(viewHolder.getAdapterPosition()));
+                Todo todo = adapter.getTodoAt(viewHolder.getAdapterPosition());
+
+                if (todo.isDone())
+                    todo.setDone(false);
+                else todo.setDone(true);
+
+                todoViewmodel.update(adapter.getTodoAt(viewHolder.getAdapterPosition()));
             }
         }).attachToRecyclerView(recyclerView);
 

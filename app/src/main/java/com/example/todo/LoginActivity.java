@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final EditText editEmail = findViewById(R.id.editEmail);
         final EditText editPassword = findViewById(R.id.editPassword);
-        final Button l = findViewById(R.id.BtnLogin);
+        final Button btnLogin = findViewById(R.id.BtnLogin);
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -33,16 +33,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (!editEmail.getText().toString().equals("") && !editPassword.getText().toString().equals(""))
-                    l.setEnabled(true);
+                    btnLogin.setEnabled(true);
                 else
-                    l.setEnabled(false);
+                    btnLogin.setEnabled(false);
             }
         };
 
         editEmail.addTextChangedListener(textWatcher);
         editPassword.addTextChangedListener(textWatcher);
 
-        l.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(editPassword.length() < 6){
