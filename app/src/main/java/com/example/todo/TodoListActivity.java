@@ -29,7 +29,7 @@ import java.util.List;
 
 
 public class TodoListActivity extends AppCompatActivity {
-    public boolean Timeflag = false;
+    public boolean timeflag = false;
 
     public final static int add_todo_request = 1;
     public final static int edit_todo_request = 2;
@@ -116,6 +116,8 @@ public class TodoListActivity extends AppCompatActivity {
                 else todo.setImportaint(true);
 
                 todoViewmodel.update(adapter.getTodoAt(viewHolder.getAdapterPosition()));
+
+                adapter.notifyDataSetChanged();
             }
         }).attachToRecyclerView(recyclerView);
 

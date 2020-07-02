@@ -63,6 +63,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
     private Button add_Contact;
     private ListView contactsListView;
     private ArrayAdapter<Contact> contactsListAdapter;
+    private MenuItem delete;
 
     private List<Contact> contactsList = new ArrayList<Contact>();
     private AlertDialog.Builder builder;
@@ -82,6 +83,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         set_importaint = findViewById(R.id.set_important);
         set_done = findViewById(R.id.set_done);
         contactsListView = findViewById(R.id.embeddedContactsList);
+        delete = findViewById(R.id.delete2);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Todo");
@@ -108,14 +110,13 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
 
             Log.d("Zutun JAHR", String.valueOf(calendar.get(calendar.YEAR)));
 
-            Toast.makeText(this, DateFormat.getDateInstance().format(calendar.getTime()), Toast.LENGTH_SHORT).show();
-
             oldContacts = args.getIntegerArrayList(EXTRA_CONTACTS);
             if (!oldContacts.isEmpty())
                 requestContactReadPermission(MY_PERMISSION_REQUEST_READ_CONTACTS);
         } else {
             setTitle("Add Todo");
             set_done.setVisibility(View.GONE);
+            //delete.setVisible(false);
         }
 
         if (intent.hasExtra(EXTRA_ID)) {

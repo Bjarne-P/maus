@@ -2,6 +2,7 @@ package com.example.todo.ROOM;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import com.example.todo.ROOM.accessors.TodoRetrofit;
 import retrofit2.Call;
@@ -10,12 +11,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import javax.ws.rs.POST;
 import java.util.List;
 
 public class TodoRepository {
     private TodoDAO todoDAO;
     private Retrofit retrofit;
     private LiveData<List<Todo>> allTodos;
+    TodoRetrofit todoRetrofit;
 
     public TodoRepository(Application application) {
 
@@ -23,13 +26,13 @@ public class TodoRepository {
         todoDAO = db.todoDAO();
         allTodos = todoDAO.getAllTodosDone();
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/backend-1.0-SNAPSHOT/")
+                .baseUrl("http://192.168.178.69:8080/backend-1.0-SNAPSHOT/rest/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        TodoRetrofit todoRetrofit = retrofit.create(TodoRetrofit.class);
-
-        Call<List<Todo>> call = todoRetrofit.getTodo();
+        todoRetrofit = retrofit.create(TodoRetrofit.class);
+        /*
+        Call<List<Todo>> call = todoRetrofit.getTodos();
 
         call.enqueue(new Callback<List<Todo>>() {
             @Override
@@ -40,32 +43,37 @@ public class TodoRepository {
                 List<Todo> retrotodos = response.body();
 
                 for (Todo todo : retrotodos){
-                    insert(todo);
+                    new InsertTodoAsyncTask(todoDAO).execute(todo);
                 }
-               /* for (Todo todo : retrotodos) {
-                    String content = "";
-                    content += "id: " + todo.getId() + "\n";
-                    content += "title: " + todo.getTitle() + "\n";
-                    content += "content: " + todo.getContent()+ "\n";
-                    content += "important" + todo.isImportaint() + "\n";
-                    content += "due_month" + todo.getDue_month() + "\n";
-                    content += "due_day: " + todo.getDue_day() + "\n";
-                    content += "due_hour: " + todo.getDue_hour() + "\n";
-                    content += "due_minute: " + todo.getDue_minute() + "\n";
-                    content += "done: " + todo.isDone() + "\n\n";
-
-                }
-                */
             }
 
             @Override
             public void onFailure(Call<List<Todo>> call, Throwable throwable) {
                 //Todo
             }
-        });
+        });*/
     }
 
+
+
     public void insert(Todo todo) {
+        Call call = todoRetrofit.createTodo(todo);
+        Log.d("Testfeld", todo.toString());
+        Log.d("FehlerErzeuger: ",  call.request().toString());
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()){
+                    Log.d("Fehler: " , String.valueOf(response.code()));
+                    return;
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("Fehler2: ", t.toString());
+            }
+        });
         new InsertTodoAsyncTask(todoDAO).execute(todo);
     }
 
@@ -82,7 +90,7 @@ public class TodoRepository {
     }
 
 
-    public LiveData<List<Todo>> getAllTodosImportant() {
+    public LiveData<List<Todo>> getAllTodos() {
         return allTodos;
     }
 

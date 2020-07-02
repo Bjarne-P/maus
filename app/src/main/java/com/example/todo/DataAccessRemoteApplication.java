@@ -101,7 +101,7 @@ public class DataAccessRemoteApplication extends Application {
 	 * @return
 	 */
 	private String getWebappBaseUrl() {
-		return "http://10.0.2.2:8080/backend-1.0-SNAPSHOT/";
+		return "http://192.168.178.69:8080/backend-1.0-SNAPSHOT/";
 	}
 
 	private String getRestBaseUrl()

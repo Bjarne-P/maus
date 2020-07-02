@@ -9,13 +9,13 @@ import java.util.List;
 public interface TodoDAO {
 
     @Insert
-    void insert(Todo note);
+    void insert(Todo todo);
 
     @Update
-    void update(Todo note);
+    void update(Todo todo);
 
     @Delete
-    void delete(Todo note);
+    void delete(Todo todo);
 
     @Query("DELETE FROM todo_table")
     void deleteAll();
