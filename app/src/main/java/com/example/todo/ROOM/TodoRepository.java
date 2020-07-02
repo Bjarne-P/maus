@@ -3,8 +3,10 @@ package com.example.todo.ROOM;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 import androidx.lifecycle.LiveData;
 import com.example.todo.ROOM.accessors.TodoRetrofit;
+import com.example.todo.TodoListActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,13 +27,16 @@ public class TodoRepository {
         TodoDB db = TodoDB.getDB(application);
         todoDAO = db.todoDAO();
         allTodos = todoDAO.getAllTodosDone();
+
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.178.69:8080/backend-1.0-SNAPSHOT/rest/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         todoRetrofit = retrofit.create(TodoRetrofit.class);
-        /*
+
+
+
         Call<List<Todo>> call = todoRetrofit.getTodos();
 
         call.enqueue(new Callback<List<Todo>>() {
@@ -39,10 +44,14 @@ public class TodoRepository {
             public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
                 if (!response.isSuccessful())
                     return;
-
+                else {
+                    deleteAllTodos();
+                }
                 List<Todo> retrotodos = response.body();
 
+
                 for (Todo todo : retrotodos){
+                    Log.d("Zutun", todo.toString());
                     new InsertTodoAsyncTask(todoDAO).execute(todo);
                 }
             }
@@ -51,7 +60,7 @@ public class TodoRepository {
             public void onFailure(Call<List<Todo>> call, Throwable throwable) {
                 //Todo
             }
-        });*/
+        });
     }
 
 
@@ -76,6 +85,7 @@ public class TodoRepository {
         });
         new InsertTodoAsyncTask(todoDAO).execute(todo);
     }
+
 
     public void update(Todo todo) {
         new UpdateTodoAsyncTask(todoDAO).execute(todo);
