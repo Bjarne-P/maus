@@ -18,6 +18,13 @@
                   android:layout_alignParentEnd="true"
                   android:layout_alignParentRight="true"/>
 
+        <TextView android:id="@+id/check_done"
+                  android:text="DoneOrNot"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/text_view_title"
+                  android:layout_alignParentEnd="true"
+                  android:layout_alignParentRight="true"/>
 
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
@@ -39,7 +46,8 @@
                   android:text="Due Days"
                   android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
                   android:id="@+id/text_view_time"
                   android:text="Time"
                   android:layout_below="@id/text_view_date"
@@ -52,7 +60,4 @@
                   android:layout_below="@+id/text_view_title"
                   android:text="Content"/>
     </RelativeLayout>
-
-
-
 </androidx.cardview.widget.CardView>
