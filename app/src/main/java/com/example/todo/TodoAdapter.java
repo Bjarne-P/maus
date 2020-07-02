@@ -1,21 +1,16 @@
 package com.example.todo;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.ROOM.Todo;
 import com.example.todo.Widgets.DoubleClickListener;
 import com.example.todo.sort.ComparatorDueDate;
-import com.example.todo.sort.CompareRecent;
 
 import java.text.DateFormat;
 import java.util.*;
@@ -53,6 +48,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
         if (current.isImportaint())
             holder.check_important.setText("Important");
         else holder.check_important.setText("regular");
+
+        if (current.isDone())
+            holder.check_done.setText("Done");
+        else holder.check_done.setText("Not Done");
 
        // holder.text_view_tile.setText(extras.getBoolean);
 
@@ -99,6 +98,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
         private TextView text_view_tile;
         private TextView text_view_content;
         private TextView check_important;
+        private TextView check_done;
         private TextView text_view_days;
         private TextView text_view_time;
 
@@ -107,6 +107,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
             text_view_tile = itemView.findViewById(R.id.text_view_title);
             text_view_content = itemView.findViewById(R.id.text_view_content);
             check_important = itemView.findViewById(R.id.check_important);
+            check_done = itemView.findViewById(R.id.check_done);
             text_view_days = itemView.findViewById(R.id.text_view_date);
             text_view_time = itemView.findViewById(R.id.text_view_time);
 /*            itemView.setOnClickListener(new View.OnClickListener() {
