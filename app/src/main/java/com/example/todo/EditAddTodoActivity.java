@@ -344,7 +344,6 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         startActivity(Intent.createChooser(intent, "Wählen Sie einen Emailclient"));
     }
 
-    //---sends an SMS message to another device---
     private void sendSMS()
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
@@ -352,10 +351,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         } else {
             String msg = edit_content.getText().toString();
             String scAddress = null;
-            // Set pending intents to broadcast
-            // when message sent and when delivered, or set to null.
             PendingIntent sentIntent = null, deliveryIntent = null;
-            // Use SmsManager.
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumberForSMS, scAddress, msg, sentIntent, deliveryIntent);
         }
@@ -372,6 +368,11 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         for (Contact c : contactsList)
             contacts.add((int) c.getId());
 
+        //convert calendar hours to 24 hr format
+        int hours = calendar.get(Calendar.HOUR);
+        if (calendar.get(Calendar.AM_PM) == Calendar.PM)
+            hours += 12;
+
         if (title.trim().isEmpty() || content.trim().isEmpty()) {
             Toast.makeText(this, "Please add Title and Content", Toast.LENGTH_LONG).show();
             return;
@@ -384,7 +385,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         intent.putExtra(EXTRA_YEAR, calendar.get(Calendar.YEAR));
         intent.putExtra(EXTRA_MONTH, calendar.get(Calendar.MONTH));
         intent.putExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
-        intent.putExtra(EXTRA_HOUR, calendar.get(Calendar.HOUR));
+        intent.putExtra(EXTRA_HOUR, hours);
         intent.putExtra(EXTRA_MINUTE, calendar.get(Calendar.MINUTE));
         intent.putExtra(EXTRA_CONTACTS, contacts);
         intent.putExtra(EXTRA_DONE, done);
@@ -395,6 +396,7 @@ public class EditAddTodoActivity extends AppCompatActivity implements TimePicker
         if (id != -1) {
             intent.putExtra(EXTRA_ID, id);
         }
+
         setResult(RESULT_OK, intent);
         finish();
     }
