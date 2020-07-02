@@ -72,8 +72,8 @@ public class LoginActivity extends AppCompatActivity {
                 else emailFlag = false;
 
                 if (passwordFlag && emailFlag)
-                    l.setEnabled(true);
-                else l.setEnabled(false);
+                    btnLogin.setEnabled(true);
+                else btnLogin.setEnabled(false);
             }
 
             @Override
@@ -95,8 +95,8 @@ public class LoginActivity extends AppCompatActivity {
                 else passwordFlag = false;
 
                 if (passwordFlag && emailFlag)
-                    l.setEnabled(true);
-                else l.setEnabled(false);
+                    btnLogin.setEnabled(true);
+                else btnLogin.setEnabled(false);
             }
 
             @Override
