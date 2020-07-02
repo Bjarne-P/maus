@@ -13,6 +13,7 @@ import com.example.todo.Widgets.DoubleClickListener;
 import com.example.todo.sort.ComparatorDueDate;
 
 import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
@@ -31,17 +32,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
     public void onBindViewHolder(@NonNull TodoHolder holder, int position) {
 
         Todo current = todos.get(position);
-        Calendar c = Calendar.getInstance();
-        Calendar now = Calendar.getInstance();
-        long cTime = c.getTimeInMillis();
-        long nowTime = now.getTimeInMillis();
+        Calendar calendar = Calendar.getInstance();
+        long nowTime = calendar.getTimeInMillis();
 
         //Bundle extras = EditAddTodoActivity.getIntent().getExtras();
 
-        c.set(current.getDue_year(), current.getDue_month(), current.getDue_day(), current.getDue_hour(),
+        calendar.set(current.getDue_year(), current.getDue_month(), current.getDue_day(), current.getDue_hour(),
                 current.getDue_minute());
 
-        String currentDateString = DateFormat.getDateInstance().format(c.getTime());
+        String currentDateString = DateFormat.getDateInstance().format(calendar.getTime());
 
         holder.text_view_tile.setText(current.getTitle());
         holder.text_view_content.setText(current.getContent());
@@ -59,7 +58,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoHolder> {
         holder.text_view_time.setText(String.format("%02d", current.getDue_hour()) + ":" +
                 String.format("%02d", current.getDue_minute()));
 
-        if (cTime < nowTime){
+        if (calendar.getTimeInMillis() < nowTime) {
             holder.text_view_days.setTextColor(Color.RED);
             holder.text_view_time.setTextColor(Color.RED);
         }
