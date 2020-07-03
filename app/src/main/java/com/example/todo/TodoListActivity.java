@@ -17,16 +17,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.ROOM.Todo;
-import com.example.todo.ROOM.TodoRepository;
-import com.example.todo.ROOM.accessors.TodoRetrofit;
-import com.example.todo.sort.ComparatorDueDate;
-import com.example.todo.sort.CompareRecent;
+import com.example.todo.erstmal_useless.sort.ComparatorDueDate;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import org.w3c.dom.Text;
-import retrofit2.Retrofit;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,6 +38,7 @@ public class TodoListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
+
 
 
         setTitle("Todolist by Bjarne Peuker & Felix Kainz");
@@ -74,21 +69,8 @@ public class TodoListActivity extends AppCompatActivity {
             }
         });
 
-        final TextView check_important = findViewById(R.id.check_important);
 
-        /*check_important.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (check_important.isChecked()){
-                   // adapter.getTodoAt();
-                }
-            }
-        });
-*/
-
-
-        Collections.sort(adapter.getTodos(), new ComparatorDueDate());
-        adapter.sortByDue();
+        online();
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -152,34 +134,7 @@ public class TodoListActivity extends AppCompatActivity {
             startActivityForResult(intent, edit_todo_request);
         });
 
-
-
-
-
-
-
-        //nachher neu machen
-        /*ListView list = findViewById(R.id.list);
-        Button b = findViewById(R.id.addButton);
-        ArrayList<String> liste = new ArrayList<>();
-        liste.add("1");
-        liste.add("2");
-        liste.add("3");
-
-        ArrayAdapter listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, liste);
-        list.setAdapter(listAdapter);
-
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               Intent intent = new Intent(TODO_List.this, EDIT_ADD_TODO.class);
-               startActivity(intent);
-            }
-        });*/
-
     }
-
-
 
 
     @Override
@@ -251,6 +206,20 @@ public class TodoListActivity extends AppCompatActivity {
                     }
                 }).setNegativeButton(android.R.string.no, null).show();
 
+    }
+
+    public void online() {
+        if (!todoViewmodel.getOnline()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Offline")
+                    .setMessage("Server not connected.\nYou are now Operating offline.")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(TodoListActivity.this, "Now Offline", Toast.LENGTH_SHORT).show();
+                        }
+                    }).show();
+        }
     }
 
 

@@ -9,8 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todo.ROOM.Todo;
-import com.example.todo.Widgets.DoubleClickListener;
-import com.example.todo.sort.ComparatorDueDate;
+import com.example.todo.erstmal_useless.DoubleClickListener;
+import com.example.todo.erstmal_useless.sort.ComparatorDueDate;
 
 import java.text.DateFormat;
 import java.time.LocalDateTime;

@@ -5,17 +5,19 @@ import android.os.AsyncTask;
 import android.util.Log;
 import androidx.lifecycle.LiveData;
 import com.example.todo.ROOM.accessors.TodoRetrofit;
-import com.example.todo.TodoListActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 public class TodoRepository {
-    private static boolean onlineFlag = false;
+    private boolean onlineFlag = false;
     private TodoDAO todoDAO;
     private Retrofit retrofit;
     private LiveData<List<Todo>> allTodos;
@@ -28,7 +30,17 @@ public class TodoRepository {
         TodoDB db = TodoDB.getDB(application);
         todoDAO = db.todoDAO();
         allTodos = todoDAO.getAllTodosDone();
-        allTodosStatic = allTodos.getValue();
+
+        new Thread(new Runnable(){
+
+            @Override
+            public void run() {
+                allTodosStatic = todoDAO.getAll();
+            }
+        }).start();
+
+
+
 
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.178.69:8080/backend-1.0-SNAPSHOT/rest/")
@@ -37,10 +49,11 @@ public class TodoRepository {
 
         todoRetrofit = retrofit.create(TodoRetrofit.class);
 
-
         Call<List<Todo>> call = todoRetrofit.getTodos();
 
-        if (todoDAO.getItemCount().getValue() == null) {
+
+        if (allTodosStatic.size() == 0) {
+
             call.enqueue(new Callback<List<Todo>>() {
                 @Override
                 public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
@@ -48,14 +61,12 @@ public class TodoRepository {
                         Log.d("Flagge", "negativ");
                         return;
                     } else {
-                        onlineFlag = true;
                         Log.d("Flagge", "positiv");
                     }
                     List<Todo> retrotodos = response.body();
 
 
                     for (Todo todo : retrotodos) {
-                        Log.d("Zutun", todo.toString());
                         new InsertTodoAsyncTask(todoDAO).execute(todo);
                     }
                 }
@@ -68,7 +79,7 @@ public class TodoRepository {
         } else {
             todoRetrofit.deleteAllTodos();
             for (Todo todo : allTodosStatic) {
-                todoRetrofit.putTodo(todo.getId(), todo);
+                insert(todo);
             }
         }
 
@@ -76,10 +87,33 @@ public class TodoRepository {
     }
 
 
+
+
+    public boolean getOnline(){
+        Call call = todoRetrofit.getTodos();
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()) {
+                    Log.d("Fehler: ", String.valueOf(response.code()));
+                    onlineFlag = false;
+                    return;
+                }else onlineFlag= true;
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("Fehler2: ", t.toString());
+                onlineFlag = false;
+            }
+
+        });
+        Log.d("Fehler", String.valueOf(onlineFlag));
+        return  onlineFlag;
+    }
+
     public void insert(Todo todo) {
         Call call = todoRetrofit.postTodo(todo);
-        Log.d("Testfeld", todo.toString());
-        Log.d("FehlerErzeuger: ", call.request().toString());
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
@@ -98,11 +132,6 @@ public class TodoRepository {
     }
 
 
-    public static boolean testOnline(){
-        if (onlineFlag)
-            return true;
-        else return false;
-    }
 
 
     public void update(Todo todo) {
@@ -222,4 +251,6 @@ public class TodoRepository {
             return null;
         }
     }
+
+
 }

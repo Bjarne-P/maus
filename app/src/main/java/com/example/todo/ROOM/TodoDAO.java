@@ -8,7 +8,7 @@ import java.util.List;
 @Dao
 public interface TodoDAO {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Todo todo);
 
     @Update
@@ -21,17 +21,10 @@ public interface TodoDAO {
     void deleteAll();
 
     @Query("SELECT * FROM todo_table ORDER BY done DESC")
-    List<Todo> getAllTodosStatic();
+    List<Todo> getAll();
 
-    @Query("Select Count(*) from todo_table")
-    LiveData<Integer> getItemCount();
 
     @Query("SELECT * FROM todo_table ORDER BY done DESC")
     LiveData<List<Todo>> getAllTodosDone();
-
-
-    @Query("SELECT * FROM todo_table ORDER BY title")
-    LiveData<List<Todo>> getAllTodosTitle();
-
 
 }

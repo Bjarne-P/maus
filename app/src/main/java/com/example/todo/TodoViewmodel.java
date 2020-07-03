@@ -27,6 +27,8 @@ public class TodoViewmodel extends AndroidViewModel {
         repository.update(todo);
     }
 
+    public boolean getOnline(){return repository.getOnline();}
+
     public void deleteAll(){
         repository.deleteAllTodos();
     }

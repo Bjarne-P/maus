@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 
-@Database(entities = Todo.class, version = 4)
+@Database(entities = Todo.class, version = 5)
 public abstract class TodoDB extends RoomDatabase {
 
     private static TodoDB DB;
@@ -24,6 +24,7 @@ public abstract class TodoDB extends RoomDatabase {
                     .addCallback(roomCallback)
                     .build();
         }
+
         return DB;
     }
 

@@ -33,16 +33,5 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".DataAccessRemoteActivity">
-
-        </activity>
-
-        <activity android:name=".webview.ChromeWebViewItemDetailsActivity">
-
-        </activity>
-
-        <activity android:name=".webview.WebViewItemDetailsActivity">
-
-        </activity>
     </application>
 </manifest>
